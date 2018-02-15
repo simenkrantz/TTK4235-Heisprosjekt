@@ -13,10 +13,16 @@ int main()
         return 1;
     }
 
+	// Logic to take care of spec. 4.1 "Oppstart"
     initialize();
 
-    //Main loop, handles order buttons
+
+	// Main loop, handles order buttons. Spec. 4.2 -- 4.7
     while (1) {
+
+    	int current_order;
+
+
     	change_of_motor_direction();
 
         // Stop elevator and exit program if the stop button is pressed
@@ -24,6 +30,7 @@ int main()
             elev_set_motor_direction(DIRN_STOP);
             break;
         }
+
 
 
 

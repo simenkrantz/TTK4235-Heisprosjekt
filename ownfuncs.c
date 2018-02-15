@@ -74,3 +74,18 @@ int down_button_outside_pressed(void)
 	else
 		return -1;	//Default
 }
+
+int order_button_inside_pressed(void)
+{
+	if(elev_get_button_signal(BUTTON_COMMAND, 0))		//Order button 1st floor pressed
+		return 0;
+	else if(elev_get_button_signal(BUTTON_COMMAND, 1))	//Order button 2nd floor pressed
+		return 1;
+	else if(elev_get_button_signal(BUTTON_COMMAND, 2))	//Order button 3rd floor pressed
+		return 2;
+	else if(elev_get_button_signal(BUTTON_COMMAND, 3))	//Order button 4th floor pressed
+		return 3;
+	else
+		return -1;	//Default
+}
+
