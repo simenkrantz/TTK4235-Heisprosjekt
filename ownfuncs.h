@@ -1,7 +1,6 @@
 #ifndef __INCLUDE_OWNFUNCS_H__
 #define __INCLUDE_OWNFUNCS_H__
 
-
 /**
 Compressed initialize function to have a more
 straightforward main function.
@@ -41,6 +40,7 @@ Returns -1 if no order button inside the elevator is pressed.
 Returns 0 for 1st floor, 1 for 2nd floor, 2 for 3rd floor, 3 for 4th floor.
 */
 int order_button_inside_pressed(void);
+
 
 
 

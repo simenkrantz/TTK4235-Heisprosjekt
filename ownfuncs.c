@@ -1,7 +1,9 @@
-#include "ownfuncs.h"
 #include "elev.h"
 #include <time.h>
 #include <stdio.h>
+
+
+#include "ownfuncs.h"
 
 void initialize(void)
 {
@@ -9,11 +11,10 @@ void initialize(void)
 
     elev_set_motor_direction(DIRN_UP);
 
-    //First loop initializes startup, 4.1 "Oppstart"
     while (1) {
         change_of_motor_direction();
 
-        if(elev_get_floor_sensor_signal() != -1) {
+        if (elev_get_floor_sensor_signal() != -1) {
         	elev_set_motor_direction(DIRN_STOP);
         	return;
         }
@@ -34,7 +35,7 @@ void time_delay(int millisecs)
 	clock_t now, then;
 	pause = millisecs*(CLOCKS_PER_SEC/1000);
 	now = then = clock();
-	while((now-then) < pause) {
+	while ((now-then) < pause) {
 		now = clock();
 	}
 }
@@ -53,11 +54,11 @@ void change_of_motor_direction(void)
 
 int up_button_outside_pressed(void)
 {
-	if(elev_get_button_signal(BUTTON_CALL_UP, 0))		//Up from 1st floor
+	if (elev_get_button_signal(BUTTON_CALL_UP, 0))		//Up from 1st floor
 		return 0;
-	else if(elev_get_button_signal(BUTTON_CALL_UP, 1))	//Up from 2nd floor
+	else if (elev_get_button_signal(BUTTON_CALL_UP, 1))	//Up from 2nd floor
 		return 1;
-	else if(elev_get_button_signal(BUTTON_CALL_UP, 2))	//Up from 3rd floor
+	else if (elev_get_button_signal(BUTTON_CALL_UP, 2))	//Up from 3rd floor
 		return 2;
 	else
 		return -1;	//Default
@@ -65,11 +66,11 @@ int up_button_outside_pressed(void)
 
 int down_button_outside_pressed(void)
 {
-	if(elev_get_button_signal(BUTTON_CALL_DOWN, 1))			//Down from 2nd floor
+	if (elev_get_button_signal(BUTTON_CALL_DOWN, 1))			//Down from 2nd floor
 		return 1;
-	else if(elev_get_button_signal(BUTTON_CALL_DOWN, 2))	//Down from 3rd floor
+	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 2))	//Down from 3rd floor
 		return 2;
-	else if(elev_get_button_signal(BUTTON_CALL_DOWN, 3))	//Down from 4th floor
+	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 3))	//Down from 4th floor
 		return 3;
 	else
 		return -1;	//Default
@@ -77,13 +78,13 @@ int down_button_outside_pressed(void)
 
 int order_button_inside_pressed(void)
 {
-	if(elev_get_button_signal(BUTTON_COMMAND, 0))		//Order button 1st floor pressed
+	if (elev_get_button_signal(BUTTON_COMMAND, 0))		//Order button 1st floor pressed
 		return 0;
-	else if(elev_get_button_signal(BUTTON_COMMAND, 1))	//Order button 2nd floor pressed
+	else if (elev_get_button_signal(BUTTON_COMMAND, 1))	//Order button 2nd floor pressed
 		return 1;
-	else if(elev_get_button_signal(BUTTON_COMMAND, 2))	//Order button 3rd floor pressed
+	else if (elev_get_button_signal(BUTTON_COMMAND, 2))	//Order button 3rd floor pressed
 		return 2;
-	else if(elev_get_button_signal(BUTTON_COMMAND, 3))	//Order button 4th floor pressed
+	else if (elev_get_button_signal(BUTTON_COMMAND, 3))	//Order button 4th floor pressed
 		return 3;
 	else
 		return -1;	//Default
