@@ -5,7 +5,8 @@
 #include "ownfuncs.h"
 
 
-int main() {
+int main()
+{
     // Initialize hardware
     if (!elev_init()) {
         printf("Unable to initialize elevator hardware!\n");
@@ -23,6 +24,8 @@ int main() {
             elev_set_motor_direction(DIRN_STOP);
             break;
         }
+
+
 
 
     }
