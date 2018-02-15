@@ -1,5 +1,8 @@
 #include "elev.h"
 #include <stdio.h>
+#include <time.h>
+
+#include "ownfuncs.h"
 
 
 int main() {
@@ -9,24 +12,19 @@ int main() {
         return 1;
     }
 
-    printf("Press STOP button to stop elevator and exit program.\n");
+    initialize();
 
-    elev_set_motor_direction(DIRN_UP);
-
+    //Main loop, handles order buttons
     while (1) {
-        // Change direction when we reach top/bottom floor
-        if (elev_get_floor_sensor_signal() == N_FLOORS - 1) {
-            elev_set_motor_direction(DIRN_DOWN);
-        } else if (elev_get_floor_sensor_signal() == 0) {
-            elev_set_motor_direction(DIRN_UP);
-        }
+    	change_of_motor_direction();
 
         // Stop elevator and exit program if the stop button is pressed
         if (elev_get_stop_signal()) {
             elev_set_motor_direction(DIRN_STOP);
             break;
         }
-    }
 
+
+    }
     return 0;
 }
