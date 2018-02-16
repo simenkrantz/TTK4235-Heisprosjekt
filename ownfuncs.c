@@ -52,6 +52,13 @@ void change_of_motor_direction(void)
         set_floor_lights();
 }
 
+
+
+/**
+Mulig de to neste bør slås sammen til en? 
+0 kan være default, negative 1-4 for ned og positive 1-4 for opp?
+*/
+
 int up_button_outside_pressed(void)
 {
 	if (elev_get_button_signal(BUTTON_CALL_UP, 0))		//Up from 1st floor
@@ -75,6 +82,8 @@ int down_button_outside_pressed(void)
 	else
 		return -1;	//Default
 }
+
+
 
 int order_button_inside_pressed(void)
 {

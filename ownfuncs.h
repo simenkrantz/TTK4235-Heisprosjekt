@@ -27,7 +27,6 @@ Returns 0 for 1st floor, 1 for 2nd floor, 2 for 3rd floor.
 */
 int up_button_outside_pressed(void);
 
-
 /**
 Returns -1 if no down order button is pressed.
 Returns 1 for 2nd floor, 2 for 3rd floor, 3 for 4th floor.
