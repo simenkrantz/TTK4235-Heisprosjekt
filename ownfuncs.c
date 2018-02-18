@@ -102,7 +102,26 @@ set_outside_order_lights(int outside_button_pressed, int value)
 {
 	// Turns light off
 	if(value == 0) {
+		switch(outside_button_pressed) {
+			case 1:
+				elev_set_button_lamp(BUTTON_CALL_UP, 0, 0);	// Light off in 1st floor UP button
+				break;
+			case 2:
+				elev_set_button_lamp(BUTTON_CALL_UP, 1, 0);	// Light off in 2nd floor UP button
+				break;
+			case 3:
+				elev_set_button_lamp(BUTTON_CALL_UP, 2, 0);	// Light off in 3rd floor UP button
+				break;
 
+			case -1:
+				elev_set_button_lamp(BUTTON_CALL_DOWN, 1, 0); // Light off in 2nd floor DOWN button
+				break;
+			case -2:
+				elev_set_button_lamp(BUTTON_CALL_DOWN, 2, 0); // Light off in 3rd floor DOWN button
+				break;
+			case -3:
+				elev_set_button_lamp(BUTTON_CALL_DOWN, 3, 0); // Light off in 4th floor DOWN button
+				break;
 	}
 
 	// Turns light on
@@ -139,7 +158,18 @@ set_floor_order_lights(int floor_order_button, int value)
 	// Turns light off
 	if (value == 0) {
 		switch(floor_order_button) {
-			
+			case 0:
+				elev_set_button_lamp(BUTTON_COMMAND, 0, 0);
+				break;
+			case 1:
+				elev_set_button_lamp(BUTTON_COMMAND, 1, 0);
+				break;
+			case 2:
+				elev_set_button_lamp(BUTTON_COMMAND, 2, 0);
+				break;
+			case 3:
+				elev_set_button_lamp(BUTTON_COMMAND, 3, 0);
+				break;
 		}
 	}
 
@@ -161,3 +191,5 @@ set_floor_order_lights(int floor_order_button, int value)
 		}
 	}
 }
+
+

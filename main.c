@@ -19,8 +19,7 @@ int main()
 
     // This loop sets DIRN_UP when an outside order button is pressed
     while(1) {
-        if (up_button_outside_pressed() != -1
-            || down_button_outside_pressed() != -1) {
+        if (button_outside_pressed() != 0) {
             elev_set_motor_direction(DIRN_UP);
             break;
         }
@@ -41,7 +40,7 @@ int main()
             break;
         }
 
-
+        
 
 
 
