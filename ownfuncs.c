@@ -21,7 +21,6 @@ initialize(void)
     }
 }
 
-
 void
 set_floor_lights(void)
 {
@@ -30,7 +29,6 @@ set_floor_lights(void)
         	elev_set_floor_indicator(current_floor);
         }
 }
-
 
 void
 time_delay(int millisecs)
@@ -44,7 +42,6 @@ time_delay(int millisecs)
 	}
 }
 
-
 void
 change_of_motor_direction(void)
 {
@@ -54,8 +51,6 @@ change_of_motor_direction(void)
         } else if (elev_get_floor_sensor_signal() == 0) {
             elev_set_motor_direction(DIRN_UP);
         }
-        
-        set_floor_lights();
 }
 
 
@@ -96,100 +91,48 @@ order_button_inside_pressed(void)
 }
 
 
-// button_outside_pressed() gives the int outside_button_pressed in main()
 void
-set_outside_order_lights(int outside_button_pressed, int value)
+set_outside_order_lights(int up_or_down, int floor, int on_or_off)
 {
-	// Turns light off
-	if(value == 0) {
-		switch(outside_button_pressed) {
-			case 1:
-				elev_set_button_lamp(BUTTON_CALL_UP, 0, 0);	// Light off in 1st floor UP button
-				break;
-			case 2:
-				elev_set_button_lamp(BUTTON_CALL_UP, 1, 0);	// Light off in 2nd floor UP button
-				break;
-			case 3:
-				elev_set_button_lamp(BUTTON_CALL_UP, 2, 0);	// Light off in 3rd floor UP button
-				break;
+	// Turning lights off
+	if(on_or_off == 0) {
 
-			case -1:
-				elev_set_button_lamp(BUTTON_CALL_DOWN, 1, 0); // Light off in 2nd floor DOWN button
-				break;
-			case -2:
-				elev_set_button_lamp(BUTTON_CALL_DOWN, 2, 0); // Light off in 3rd floor DOWN button
-				break;
-			case -3:
-				elev_set_button_lamp(BUTTON_CALL_DOWN, 3, 0); // Light off in 4th floor DOWN button
-				break;
+		// Turn off the DOWN button
+		if(up_or_down == 0) {
+			elev_set_button_lamp(BUTTON_CALL_DOWN, floor, on_or_off);
+		}
+
+		// Turn off the UP button
+		else {
+			elev_set_button_lamp(BUTTON_CALL_UP, floor, on_or_off);
+		}
 	}
 
-	// Turns light on
+	// Turning lights on
 	else {
-		switch(outside_button_pressed) {
-			case 1:
-				elev_set_button_lamp(BUTTON_CALL_UP, 0, 1);	// Light in 1st floor UP button
-				break;
-			case 2:
-				elev_set_button_lamp(BUTTON_CALL_UP, 1, 1);	// Light in 2nd floor UP button
-				break;
-			case 3:
-				elev_set_button_lamp(BUTTON_CALL_UP, 2, 1);	// Light in 3rd floor UP button
-				break;
 
-			case -1:
-				elev_set_button_lamp(BUTTON_CALL_DOWN, 1, 1); // Light in 2nd floor DOWN button
-				break;
-			case -2:
-				elev_set_button_lamp(BUTTON_CALL_DOWN, 2, 1); // Light in 3rd floor DOWN button
-				break;
-			case -3:
-				elev_set_button_lamp(BUTTON_CALL_DOWN, 3, 1); // Light in 4th floor DOWN button
-				break;
+		// Turn on the DOWN button
+		if(up_or_down == 0) {
+			elev_set_button_lamp(BUTTON_CALL_DOWN, floor, on_or_off);
+		}
+
+		// Turn on the UP button
+		else {
+			elev_set_button_lamp(BUTTON_CALL_UP, floor, on_or_off);
 		}
 	}
 }
 
-
-// order_button_inside_pressed() gives the int floor_order_button in main()
 void
-set_floor_order_lights(int floor_order_button, int value)
+set_floor_order_lights(int floor, int on_or_off)
 {
 	// Turns light off
-	if (value == 0) {
-		switch(floor_order_button) {
-			case 0:
-				elev_set_button_lamp(BUTTON_COMMAND, 0, 0);
-				break;
-			case 1:
-				elev_set_button_lamp(BUTTON_COMMAND, 1, 0);
-				break;
-			case 2:
-				elev_set_button_lamp(BUTTON_COMMAND, 2, 0);
-				break;
-			case 3:
-				elev_set_button_lamp(BUTTON_COMMAND, 3, 0);
-				break;
-		}
+	if (on_or_off == 0) {
+		elev_set_button_lamp(BUTTON_COMMAND, floor, on_or_off);
 	}
 
 	// Turns light on
 	else {
-		switch(floor_order_button) {
-			case 0:
-				elev_set_button_lamp(BUTTON_COMMAND, 0, 1);
-				break;
-			case 1:
-				elev_set_button_lamp(BUTTON_COMMAND, 1, 1);
-				break;
-			case 2:
-				elev_set_button_lamp(BUTTON_COMMAND, 2, 1);
-				break;
-			case 3:
-				elev_set_button_lamp(BUTTON_COMMAND, 3, 1);
-				break;
-		}
+		elev_set_button_lamp(BUTTON_COMMAND, floor, on_or_off);
 	}
 }
-
-

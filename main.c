@@ -6,6 +6,9 @@
 #include "ownfuncs.h"
 
 
+// Delay time in milliseconds
+#define DELAY_TIME 3000
+
 int main()
 {
     // Initialize hardware
@@ -32,7 +35,8 @@ int main()
     */
     while (1) {
 
-    	change_of_motor_direction();
+    	change_of_motor_direction(); 
+        set_floor_lights();
 
         // Stop elevator and exit program if the stop button is pressed
         if (elev_get_stop_signal()) {
@@ -41,7 +45,7 @@ int main()
         }
 
         
-
+        time_delay(DELAY_TIME);
 
 
     }
