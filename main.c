@@ -36,7 +36,7 @@ int main()
     while (1) {
 
     	change_of_motor_direction(); 
-        set_floor_lights();
+        set_floor_lights(); // Last passed floor
 
         // Stop elevator and exit program if the stop button is pressed
         if (elev_get_stop_signal()) {
@@ -46,8 +46,8 @@ int main()
 
         
         time_delay(DELAY_TIME);
-
-
+        
+        
     }
     return 0;
 }

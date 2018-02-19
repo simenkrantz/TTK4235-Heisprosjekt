@@ -136,3 +136,4 @@ set_floor_order_lights(int floor, int on_or_off)
 		elev_set_button_lamp(BUTTON_COMMAND, floor, on_or_off);
 	}
 }
+
