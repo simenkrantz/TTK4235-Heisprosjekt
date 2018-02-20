@@ -6,9 +6,6 @@
 #include "ownfuncs.h"
 
 
-// Delay time in milliseconds
-#define DELAY_TIME 3000
-
 int main()
 {
     // Initialize hardware
