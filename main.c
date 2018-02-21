@@ -5,6 +5,7 @@
 // Own header files
 #include "ownfuncs.h"
 
+#define ARRAY_LENGTH 100
 
 int main()
 {
@@ -14,37 +15,68 @@ int main()
         return 1;
     }
 
-	// Logic to take care of spec. 4.1 "Oppstart", sets DIRN_STOP
-    initialize();
+    /**
+    @var up_down_order_list is an array containing up/down orders with length ARRAY_LENGTH
+    @var up_down_button_pressed is given by get_button_outside_pressed()
+    */
+    int up_down_order_list[ARRAY_LENGTH];    
+    int up_down_button_pressed;
 
-    // This loop sets DIRN_UP when an outside order button is pressed
+
+	// Spec. 4.1 "Oppstart"
+    initialize();
     while(1) {
-        if (button_outside_pressed() != 0) {
+        up_down_button_pressed = get_button_outside_pressed();
+        if (button_pressed != 0) {
+            up_down_order_list[0] = up_down_button_pressed;
             elev_set_motor_direction(DIRN_UP);
             break;
         }
     }
 
 
+    // Now we have the first order in the array
+
 	/**
-    MAIN LOOP
-    Handles order buttons, spec. 4.2 -- 4.7
+    MAIN LOOP       Spec. 4.1 -- 4.7
     */
     while (1) {
-
     	change_of_motor_direction(); 
-        set_floor_lights(); // Last passed floor
+        set_floor_lights();
 
-        // Stop elevator and exit program if the stop button is pressed
+        
+        //STOP STATE          Spec. 4.6
         if (elev_get_stop_signal()) {
+            elev_set_stop_lamp(1);
             elev_set_motor_direction(DIRN_STOP);
-            break;
+
+            while(get_stop_button()) {
+                continue;
+            }
+            elev_set_stop_lamp(0);
+
+
+            /**
+
+            Erase orders
+            
+            while(1) {
+                if(get_button_outside_pressed() != 0)
+                    break;
+            }
+            
+            printf(order_button); Check what comes out
+
+            */
         }
 
-        
-        time_delay(DELAY_TIME);
-        
-        
+
+        // ORDER STATE
+
+        // Manipulate up_down_order_list
+
+        up_down_button_pressed = get_button_outside_pressed();
+
     }
     return 0;
 }

@@ -31,7 +31,7 @@ BUTTON_CALL_UP returns positive values. 1: 1st floor, 2: 2nd floor, 3: 3rd floor
 BUTTON_CALL_DOWN returns negative values. -1: 2nd floor, -2: 3rd floor, -3: 4th floor. 
 */
 int
-button_outside_pressed(void);
+get_button_outside_pressed(void);
 
 
 /**
@@ -39,7 +39,7 @@ Returns -1 if no order button inside the elevator is pressed.
 Returns 0 for 1st floor, 1 for 2nd floor, 2 for 3rd floor, 3 for 4th floor.
 */
 int
-order_button_inside_pressed(void);
+get_order_button_inside_pressed(void);
 
 
 /**
@@ -62,9 +62,9 @@ set_floor_order_lights(int floor, int on_or_off);
 
 
 /**
-Door logic
+Opens the door, sets the doorlight for 3 seconds.
 */
-
+void open_close_door(void);
 
 
 #endif

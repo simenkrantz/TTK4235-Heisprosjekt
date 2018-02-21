@@ -59,7 +59,7 @@ change_of_motor_direction(void)
 
 
 int
-button_outside_pressed(void)
+get_button_outside_pressed(void)
 {
 	if (elev_get_button_signal(BUTTON_CALL_UP, 0))			// UP from 1st floor
 		return 1;
@@ -80,7 +80,7 @@ button_outside_pressed(void)
 
 
 int
-order_button_inside_pressed(void)
+get_order_button_inside_pressed(void)
 {
 	if (elev_get_button_signal(BUTTON_COMMAND, 0))		// Order button 1st floor pressed
 		return 0;
@@ -141,3 +141,13 @@ set_floor_order_lights(int floor, int on_or_off)
 	}
 }
 
+void
+open_close_door(void)
+{
+	// Cannot open door between floors
+	if(elev_get_floor_sensor_signal != -1) {
+		elev_set_door_open_lamp(1);
+		time_delay(DELAY_TIME);
+		elev_set_door_open_lamp(0);
+	}
+}
