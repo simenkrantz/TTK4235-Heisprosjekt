@@ -7,8 +7,6 @@
 // Delay time in milliseconds
 #define DELAY_TIME 3000
 
-#define ARRAY_LENGTH 100
-
 void
 initialize(void)
 {
@@ -48,13 +46,15 @@ time_delay(int millisecs)
 }
 
 void
-change_of_motor_direction(void)
+change_of_motor_direction(int* motor_dir)
 {
 	// Change direction when we reach top/bottom floor
         if (elev_get_floor_sensor_signal() == N_FLOORS - 1) {
             elev_set_motor_direction(DIRN_DOWN);
+            &motor_dir = -1;
         } else if (elev_get_floor_sensor_signal() == 0) {
             elev_set_motor_direction(DIRN_UP);
+            &motor_dir = 1;
         }
 }
 
@@ -72,42 +72,44 @@ open_close_door(void)
 
 
 
-int
-get_button_outside_pressed(void)
+void
+set_order_list(int array[4][3])
 {
 	if (elev_get_button_signal(BUTTON_CALL_UP, 0))			// UP from 1st floor
-		return 1;
+		array[0][0] = 1;
 	else if (elev_get_button_signal(BUTTON_CALL_UP, 1))		// UP from 2nd floor
-		return 2;
+		array[1][0] = 1;
 	else if (elev_get_button_signal(BUTTON_CALL_UP, 2))		// UP from 3rd floor
-		return 3;
-
+		array[2][0] = 1;
 	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 1))	// DOWN from 2nd floor
-		return -1;
+		array[1][1] = 1;
 	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 2))	// DOWN from 3rd floor
-		return -2;
+		array[2][1] = 1;
 	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 3))	// DOWN from 4th floor
-		return -3;
+		array[3][1] = 1;
+	else if (elev_get_button_signal(BUTTON_COMMAND, 0))		// Order button 1st floor pressed
+		array[0][2] = 1;
+	else if (elev_get_button_signal(BUTTON_COMMAND, 1))		// Order button 2nd floor pressed
+		array[1][2] = 1;
+	else if (elev_get_button_signal(BUTTON_COMMAND, 2))		// Order button 3rd floor pressed
+		array[2][2] = 1;
+	else if (elev_get_button_signal(BUTTON_COMMAND, 3))		// Order button 4th floor pressed
+		array[3][2] = 1;
 	else
-		return 0;	// Default
+		return;
 }
-
 
 int
-get_order_button_inside_pressed(void)
-{
-	if (elev_get_button_signal(BUTTON_COMMAND, 0))		// Order button 1st floor pressed
-		return 0;
-	else if (elev_get_button_signal(BUTTON_COMMAND, 1))	// Order button 2nd floor pressed
-		return 1;
-	else if (elev_get_button_signal(BUTTON_COMMAND, 2))	// Order button 3rd floor pressed
-		return 2;
-	else if (elev_get_button_signal(BUTTON_COMMAND, 3))	// Order button 4th floor pressed
-		return 3;
-	else
-		return -1;	// Default
+check_up_down_button_pressed(int array[4][3]) {
+	bool pressed = -1;
+	for(int i = 0; i < 4; i++) {
+		if(array[i][0] == 1|| array[i][1] == 1) {
+			pressed = i;
+			break;
+		}
+	}
+	return pressed;
 }
-
 
 void
 set_outside_order_lights(int up_or_down, int floor, int on_or_off)
@@ -155,33 +157,5 @@ set_floor_order_lights(int floor, int on_or_off)
 	}
 }
 
-// Array functions
-
-void
-init_array(Array* init_arr, int init_size)
-{
-	init_arr->array = (int*)malloc(init_size*sizeof(int));
-	init_arr->size = init_size;
-	init_arr->used_entries = 0;
-}
 
 
-
-void
-add_element_in_array(Array* arr)
-{
-
-}
-
-void
-remove_index_element(int index, Array* arr)
-{
-
-}
-
-int
-length_of_array(Array* arr)
-{
-	int length = sizeof(array)/sizeof(array[0]);
-	return length;
-}

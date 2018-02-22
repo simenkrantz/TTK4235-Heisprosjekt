@@ -5,87 +5,94 @@
 // Own header files
 #include "ownfuncs.h"
 
-#define ARRAY_LENGTH 100
+
+// Number of buttons for each floor
+#define N_BUTTONS 3
 
 int main()
 {
 
     // Initialize hardware
-/**    if (!elev_init()) {
+    if (!elev_init()) {
         printf("Unable to initialize elevator hardware!\n");
         return 1;
     }
-*/
+
     /**
-    @var up_down_order_list is an array containing up/down orders with length ARRAY_LENGTH
-    @var up_down_button_pressed is given by get_button_outside_pressed()
+    @var order_list: Elements in the array are set to 1 if the associated button is pressed
+	[ [UP from 1st, 	0		 , to 1st],
+	[  UP from 2nd, DOWN from 2nd, to 2nd],
+	[  UP from 3rd, DOWN from 3rd, to 3rd],
+	[  		0	  , DOWN from 4th, to 4th]]
+
+	@var motor_direction is a pointer, is -1 if DIRN_DOWN, 0 if DIRN_STOP, 1 if DIRN_UP
     */
-    int up_down_order_list[ARRAY_LENGTH] = {1, 2, 3, 4, 5};    
-//    int up_down_button_pressed;
+    int order_list[N_FLOORS][N_BUTTONS] = {0};
 
-	int length = length_of_array(up_down_order_list);
-	printf("%d", length);    
-
-
+   
 	// Spec. 4.1 "Oppstart"
-/**    initialize();
-    while(1) {
-        up_down_button_pressed = get_button_outside_pressed();
-        if (button_pressed != 0) {
-            up_down_order_list[0] = up_down_button_pressed;
-            elev_set_motor_direction(DIRN_UP);
-            break;
-        }
-    }
-*/
+    initialize();
+    int* motor_direction = 0;      
 
-    // Now we have the first order in the array
-
+    
 	/**
     MAIN LOOP       Spec. 4.1 -- 4.7
     */
-/**	while (1) {
-    	change_of_motor_direction(); 
+	while (1) {
+    	change_of_motor_direction(motor_direction); 
         set_floor_lights();
+
+        // Check if buttons are pressed
+        set_order_list(order_list);
 
         
         //STOP STATE          Spec. 4.6
         if (elev_get_stop_signal()) {
             elev_set_stop_lamp(1);
             elev_set_motor_direction(DIRN_STOP);
+            &motor_direction = 0;
 
             while(get_stop_button()) {
                 continue;
             }
             elev_set_stop_lamp(0);
 
-*/
-            /**
-
-            Erase orders
-            
-            while(1) {
-                if(get_button_outside_pressed() != 0)
-                    break;
+            // Erase orders
+            for(int i = 0; i < 4; i++) {
+            	for(int j = 0; j < 3; j++) {
+            		order_list[i][j] = 0;
+            	}
             }
             
-            printf(order_button); Check what comes out
-
-            */      
-//        }
-
-
-        // ORDER STATE
-
-        // Manipulate up_down_order_list
-
-//        up_down_button_pressed = get_button_outside_pressed();
+            // Checks if array has order
+            while(1) {
+                if(check_up_down_button_pressed(order_list) != -1)
+                    break;
+            }   
+	   	}
 
 
-        // WAIT STATE
+	   	// ORDER STATE
 
-//    }
+	   	
+	   	if ((elev_get_floor_sensor_signal() != -1) && (check_up_down_button_pressed(order_list) != -1)) {
+            if (check_up_down_button_pressed(order_list) < last_detected_floor) {
+	            elev_set_motor_direction(DIRN_DOWN);
+	            &motor_direction = -1;
+	        }
 
+	        else if (check_up_down_button_pressed(order_list) > last_detected_floor) {
+	            elev_set_motor_direction(DIRN_UP);
+	            &motor_direction = 1;
+	        }
+	        
+        }
+
+
+
+
+    // End of while loop
+    }
 
     return 0;
 }
