@@ -34,12 +34,13 @@ set_order_list(int array[4][3]);
 
 
 /**
-Iterate through array to see if button pressed
-Returns -1 for empty list, 0--3 for 1st--4th floor
-Returns first found request
+Checks if an UP or DOWN button is pressed in the given floor
+@param array is the array containing orders
+@param floor is the floor we want to check
+Returns -1 if DOWN button pressed, 1 if UP button pressed, 0 if no UP/DOWN button is pressed
 */
 int
-check_up_down_button_pressed(int array[4][3]);
+check_up_down_button_pressed(int array[4][3], int floor);
 
 /**
 Sets the UP/DOWN lights on or off outside the elevator.

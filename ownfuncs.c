@@ -71,7 +71,7 @@ open_close_door(void)
 }
 
 
-
+///////// ADD LIGHT LOGIC
 void
 set_order_list(int array[4][3])
 {
@@ -100,15 +100,30 @@ set_order_list(int array[4][3])
 }
 
 int
-check_up_down_button_pressed(int array[4][3]) {
-	bool pressed = -1;
-	for(int i = 0; i < 4; i++) {
-		if(array[i][0] == 1|| array[i][1] == 1) {
-			pressed = i;
+check_up_down_button_pressed(int array[4][3], int floor) {
+	switch(floor) {
+		case 0:
+			if(array[0][0] == 1)
+				return 1;
 			break;
-		}
+		case 1:
+			if(array[1][0] == 1)
+				return 1;
+			else if(array[1][1] == 1)
+				return -1;
+			break;
+		case 2:
+			if(array[2][0] == 1)
+				return 1;
+			else if(array[2][1] == 1)
+				return -1;
+			break;
+		case 3:
+			if(array[3][1] == 1)
+				return -1;
+			break;
 	}
-	return pressed;
+	return 0;
 }
 
 void

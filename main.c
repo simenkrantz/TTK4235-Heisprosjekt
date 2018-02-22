@@ -25,14 +25,16 @@ int main()
 	[  UP from 3rd, DOWN from 3rd, to 3rd],
 	[  		0	  , DOWN from 4th, to 4th]]
 
-	@var motor_direction is a pointer, is -1 if DIRN_DOWN, 0 if DIRN_STOP, 1 if DIRN_UP
+	@var motor_direction is last direction, is -1 if DIRN_DOWN, 1 if DIRN_UP
     */
     int order_list[N_FLOORS][N_BUTTONS] = {0};
 
    
 	// Spec. 4.1 "Oppstart"
     initialize();
-    int* motor_direction = 0;      
+    int* motor_direction = 0;
+    int* elevator_caller = -1;
+
 
     
 	/**
@@ -45,12 +47,18 @@ int main()
         // Check if buttons are pressed
         set_order_list(order_list);
 
+        /**
+		Update function runs all the time
+
+		Checks if a button is pressed through elev_get_button_signal()
+		and sets button lamps. Needs to update the matrix with set_order_list()
+        */
+
         
         //STOP STATE          Spec. 4.6
         if (elev_get_stop_signal()) {
             elev_set_stop_lamp(1);
             elev_set_motor_direction(DIRN_STOP);
-            &motor_direction = 0;
 
             while(get_stop_button()) {
                 continue;
@@ -66,29 +74,44 @@ int main()
             
             // Checks if array has order
             while(1) {
-                if(check_up_down_button_pressed(order_list) != -1)
-                    break;
+            	for(int floor = 0; floor < 4; floor++) {
+            		if(check_up_down_button_pressed(order_list, floor) != 0)
+            			break;
+            	}
             }   
 	   	}
 
 
 	   	// ORDER STATE
 
-	   	
-	   	if ((elev_get_floor_sensor_signal() != -1) && (check_up_down_button_pressed(order_list) != -1)) {
-            if (check_up_down_button_pressed(order_list) < last_detected_floor) {
-	            elev_set_motor_direction(DIRN_DOWN);
-	            &motor_direction = -1;
-	        }
+	   	// Sends elevevator to first up/down request ?
+	   	if (elev_get_floor_sensor_signal() != -1) {
+	   		for(int i = 0; i < 4; i++) {
+		   		if(check_up_down_button_pressed(order_list, i) != 0) {
+	            	&elevator_caller = i;
+	            	if (&elevator_caller < elev_get_floor_sensor_signal()) {
+		            	elev_set_motor_direction(DIRN_DOWN);
+		            	&motor_direction = -1;
+		        	}
+		        	else if (&elevator_caller > elev_get_floor_sensor_signal()) {
+		            	elev_set_motor_direction(DIRN_UP);
+		            	&motor_direction = 1;
+		        	}
+		        	break;
+	        	}
+	        	&elevator_caller = -1;
+        	}
+		}
 
-	        else if (check_up_down_button_pressed(order_list) > last_detected_floor) {
-	            elev_set_motor_direction(DIRN_UP);
-	            &motor_direction = 1;
-	        }
-	        
+        if(elev_get_floor_sensor_signal() == &elevator_caller) {
+        	open_close_door();
+
+        	// From here we take BUTTON_COMMAND orders 1st -- 4th floor
+        	//
+
+
+
         }
-
-
 
 
     // End of while loop
