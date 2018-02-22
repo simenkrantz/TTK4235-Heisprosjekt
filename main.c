@@ -9,22 +9,26 @@
 
 int main()
 {
+
     // Initialize hardware
-    if (!elev_init()) {
+/**    if (!elev_init()) {
         printf("Unable to initialize elevator hardware!\n");
         return 1;
     }
-
+*/
     /**
     @var up_down_order_list is an array containing up/down orders with length ARRAY_LENGTH
     @var up_down_button_pressed is given by get_button_outside_pressed()
     */
-    int up_down_order_list[ARRAY_LENGTH];    
-    int up_down_button_pressed;
+    int up_down_order_list[ARRAY_LENGTH] = {1, 2, 3, 4, 5};    
+//    int up_down_button_pressed;
+
+	int length = length_of_array(up_down_order_list);
+	printf("%d", length);    
 
 
 	// Spec. 4.1 "Oppstart"
-    initialize();
+/**    initialize();
     while(1) {
         up_down_button_pressed = get_button_outside_pressed();
         if (button_pressed != 0) {
@@ -33,14 +37,14 @@ int main()
             break;
         }
     }
-
+*/
 
     // Now we have the first order in the array
 
 	/**
     MAIN LOOP       Spec. 4.1 -- 4.7
     */
-    while (1) {
+/**	while (1) {
     	change_of_motor_direction(); 
         set_floor_lights();
 
@@ -55,7 +59,7 @@ int main()
             }
             elev_set_stop_lamp(0);
 
-
+*/
             /**
 
             Erase orders
@@ -67,16 +71,21 @@ int main()
             
             printf(order_button); Check what comes out
 
-            */
-        }
+            */      
+//        }
 
 
         // ORDER STATE
 
         // Manipulate up_down_order_list
 
-        up_down_button_pressed = get_button_outside_pressed();
+//        up_down_button_pressed = get_button_outside_pressed();
 
-    }
+
+        // WAIT STATE
+
+//    }
+
+
     return 0;
 }

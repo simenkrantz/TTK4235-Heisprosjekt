@@ -7,6 +7,7 @@
 // Delay time in milliseconds
 #define DELAY_TIME 3000
 
+#define ARRAY_LENGTH 100
 
 void
 initialize(void)
@@ -56,6 +57,19 @@ change_of_motor_direction(void)
             elev_set_motor_direction(DIRN_UP);
         }
 }
+
+
+void
+open_close_door(void)
+{
+	// Cannot open door between floors
+	if(elev_get_floor_sensor_signal != -1) {
+		elev_set_door_open_lamp(1);
+		time_delay(DELAY_TIME);
+		elev_set_door_open_lamp(0);
+	}
+}
+
 
 
 int
@@ -141,13 +155,33 @@ set_floor_order_lights(int floor, int on_or_off)
 	}
 }
 
+// Array functions
+
 void
-open_close_door(void)
+init_array(Array* init_arr, int init_size)
 {
-	// Cannot open door between floors
-	if(elev_get_floor_sensor_signal != -1) {
-		elev_set_door_open_lamp(1);
-		time_delay(DELAY_TIME);
-		elev_set_door_open_lamp(0);
-	}
+	init_arr->array = (int*)malloc(init_size*sizeof(int));
+	init_arr->size = init_size;
+	init_arr->used_entries = 0;
+}
+
+
+
+void
+add_element_in_array(Array* arr)
+{
+
+}
+
+void
+remove_index_element(int index, Array* arr)
+{
+
+}
+
+int
+length_of_array(Array* arr)
+{
+	int length = sizeof(array)/sizeof(array[0]);
+	return length;
 }

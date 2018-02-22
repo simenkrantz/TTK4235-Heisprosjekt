@@ -67,4 +67,54 @@ Opens the door, sets the doorlight for 3 seconds.
 void open_close_door(void);
 
 
+
+/**
+@var array is the given array
+@var size is the size of the array
+@var used_entries the number of elements actually in use
+*/
+typedef struct {
+	int* array;
+	int size;
+	int used_entries;
+} Array;
+
+
+/**
+Initializes an array to a certain size, dynamically
+@param init_arr is an Array pointer to the array
+@param init_size is initial size of array
+*/
+void init_array(Array* init_arr, int init_size);
+
+
+/**
+Adds element last in an array
+@param arr is an Array pointer to an array
+*/
+void add_element_in_array(Array* arr);
+
+
+/**
+Removes the last element in an array
+@param index is the index to be removed
+@param array is an array containing int
+*/
+void remove_index_element(int index, Array* arr);
+
+
+/**
+Gives the length of an array
+@param array is an array containing int
+*/
+int length_of_array(Array* arr);
+
+
+/**
+Absolute value
+*/
+
+
+
+
 #endif
