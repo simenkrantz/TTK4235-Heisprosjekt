@@ -8,23 +8,6 @@
 #define DELAY_TIME 3000
 
 void
-initialize(void)
-{
-    printf("Press STOP button to stop elevator and exit program.\n");
-
-    elev_set_motor_direction(DIRN_UP);
-
-    while (1) {
-        change_of_motor_direction();
-
-        if (elev_get_floor_sensor_signal() != -1) {
-        	elev_set_motor_direction(DIRN_STOP);
-        	return;
-        }
-    }
-}
-
-void
 set_floor_lights(void)
 {
         int current_floor = elev_get_floor_sensor_signal();
@@ -51,10 +34,10 @@ change_of_motor_direction(int* motor_dir)
 	// Change direction when we reach top/bottom floor
         if (elev_get_floor_sensor_signal() == N_FLOORS - 1) {
             elev_set_motor_direction(DIRN_DOWN);
-            &motor_dir = -1;
+            motor_dir = -1;
         } else if (elev_get_floor_sensor_signal() == 0) {
             elev_set_motor_direction(DIRN_UP);
-            &motor_dir = 1;
+            motor_dir = 1;
         }
 }
 
@@ -63,11 +46,11 @@ void
 open_close_door(void)
 {
 	// Cannot open door between floors
-	if(elev_get_floor_sensor_signal != -1) {
+	//if(elev_get_floor_sensor_signal() != -1) {
 		elev_set_door_open_lamp(1);
 		time_delay(DELAY_TIME);
 		elev_set_door_open_lamp(0);
-	}
+	//}
 }
 
 
@@ -95,8 +78,7 @@ set_order_list(int array[4][3])
 		array[2][2] = 1;
 	else if (elev_get_button_signal(BUTTON_COMMAND, 3))		// Order button 4th floor pressed
 		array[3][2] = 1;
-	else
-		return;
+	return;
 }
 
 int

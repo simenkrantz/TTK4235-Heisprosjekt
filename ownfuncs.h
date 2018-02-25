@@ -1,15 +1,6 @@
 #ifndef __INCLUDE_OWNFUNCS_H__
 #define __INCLUDE_OWNFUNCS_H__
 
-/**
-Compressed initialize function to have a more
-straightforward main function.
-Line 12-29 in the original main.c from BB.
-*/
-void
-initialize(void);
-
-
 // Sets the floorlight for the last passed floor.
 void
 set_floor_lights(void);

@@ -28,24 +28,44 @@ int main()
 	@var motor_direction is last direction, is -1 if DIRN_DOWN, 1 if DIRN_UP
     */
     int order_list[N_FLOORS][N_BUTTONS] = {0};
-
-   
+    for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 3; j++) {
+            printf("%d", order_list[i][j]);
+        }
+        printf("\n");
+    }
+/**   
 	// Spec. 4.1 "Oppstart"
-    initialize();
-    int* motor_direction = 0;
-    int* elevator_caller = -1;
+    int* motor_direction;
+
+    printf("Press STOP button to stop elevator and exit program.\n");
+    elev_set_motor_direction(DIRN_UP);
+
+    while (1) {
+        change_of_motor_direction(motor_direction);
+
+        if (elev_get_floor_sensor_signal() != -1) {
+            elev_set_motor_direction(DIRN_STOP);
+            break;
+        }
+    }
+
+//    int* elevator_caller = -1;
 
 
     
-	/**
-    MAIN LOOP       Spec. 4.1 -- 4.7
-    */
+
+    // MAIN LOOP       Spec. 4.1 -- 4.7
+
+    
 	while (1) {
     	change_of_motor_direction(motor_direction); 
         set_floor_lights();
 
         // Check if buttons are pressed
         set_order_list(order_list);
+
+*/
 
         /**
 		Update function runs all the time
@@ -54,7 +74,7 @@ int main()
 		and sets button lamps. Needs to update the matrix with set_order_list()
         */
 
-        
+/**        
         //STOP STATE          Spec. 4.6
         if (elev_get_stop_signal()) {
             elev_set_stop_lamp(1);
@@ -116,6 +136,6 @@ int main()
 
     // End of while loop
     }
-
+*/
     return 0;
 }
