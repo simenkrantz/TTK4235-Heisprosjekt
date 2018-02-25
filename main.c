@@ -123,6 +123,18 @@ int main()
 	   	// ORDER STATE
         int current_floor = elev_get_floor_sensor_signal();
 
+
+        if(order_floor > last_passed_floor) {
+            elev_set_motor_direction(DIRN_UP);
+            *motor_direction = 1;
+        }
+
+
+/**
+From here, check our direction and the corresponding column according to present floor
+If BUTTON_COMMAND is high, stop anyways
+*/
+
         if(current_floor != -1) {
             if(order_list[current_floor][0] == 1 || order_list[current_floor][1] == 1
                 || order_list[current_floor][2] == 1) {
@@ -149,13 +161,7 @@ int main()
                 }
 
             }
-
-            if(order_floor > last_passed_floor) {
-                elev_set_motor_direction(DIRN_UP);
-                *motor_direction = 1;
-            }
         }
-
 
 
 
