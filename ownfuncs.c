@@ -34,10 +34,10 @@ change_of_motor_direction(int* motor_dir)
 	// Change direction when we reach top/bottom floor
         if (elev_get_floor_sensor_signal() == N_FLOORS - 1) {
             elev_set_motor_direction(DIRN_DOWN);
-            motor_dir = -1;
+            *motor_dir = -1;
         } else if (elev_get_floor_sensor_signal() == 0) {
             elev_set_motor_direction(DIRN_UP);
-            motor_dir = 1;
+            *motor_dir = 1;
         }
 }
 
@@ -45,39 +45,56 @@ change_of_motor_direction(int* motor_dir)
 void
 open_close_door(void)
 {
-	// Cannot open door between floors
-	//if(elev_get_floor_sensor_signal() != -1) {
-		elev_set_door_open_lamp(1);
-		time_delay(DELAY_TIME);
-		elev_set_door_open_lamp(0);
-	//}
+	elev_set_door_open_lamp(1);
+	time_delay(DELAY_TIME);
+	elev_set_door_open_lamp(0);
 }
 
 
 ///////// ADD LIGHT LOGIC
 void
-set_order_list(int array[4][3])
+set_order_list_and_lights(int array[4][3])
 {
-	if (elev_get_button_signal(BUTTON_CALL_UP, 0))			// UP from 1st floor
+	if (elev_get_button_signal(BUTTON_CALL_UP, 0)) {			// UP from 1st floor
 		array[0][0] = 1;
-	else if (elev_get_button_signal(BUTTON_CALL_UP, 1))		// UP from 2nd floor
+		elev_set_button_lamp(BUTTON_CALL_UP, 0, 1);
+	}
+	else if (elev_get_button_signal(BUTTON_CALL_UP, 1)) {		// UP from 2nd floor
 		array[1][0] = 1;
-	else if (elev_get_button_signal(BUTTON_CALL_UP, 2))		// UP from 3rd floor
+		elev_set_button_lamp(BUTTON_CALL_UP, 1, 1);
+	}
+	else if (elev_get_button_signal(BUTTON_CALL_UP, 2)) {		// UP from 3rd floor
 		array[2][0] = 1;
-	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 1))	// DOWN from 2nd floor
+		elev_set_button_lamp(BUTTON_CALL_UP, 2, 1);
+	}
+	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 1)) {		// DOWN from 2nd floor
 		array[1][1] = 1;
-	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 2))	// DOWN from 3rd floor
+		elev_set_button_lamp(BUTTON_CALL_DOWN, 1, 1);
+	}
+	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 2)) {		// DOWN from 3rd floor
 		array[2][1] = 1;
-	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 3))	// DOWN from 4th floor
+		elev_set_button_lamp(BUTTON_CALL_DOWN, 2, 1);
+	}
+	else if (elev_get_button_signal(BUTTON_CALL_DOWN, 3)) {		// DOWN from 4th floor
 		array[3][1] = 1;
-	else if (elev_get_button_signal(BUTTON_COMMAND, 0))		// Order button 1st floor pressed
+		elev_set_button_lamp(BUTTON_CALL_DOWN, 3, 1);
+	}
+	else if (elev_get_button_signal(BUTTON_COMMAND, 0)) {		// Order button 1st floor pressed
 		array[0][2] = 1;
-	else if (elev_get_button_signal(BUTTON_COMMAND, 1))		// Order button 2nd floor pressed
+		elev_set_button_lamp(BUTTON_COMMAND, 0, 1);
+	}
+	else if (elev_get_button_signal(BUTTON_COMMAND, 1)) {		// Order button 2nd floor pressed
 		array[1][2] = 1;
-	else if (elev_get_button_signal(BUTTON_COMMAND, 2))		// Order button 3rd floor pressed
+		elev_set_button_lamp(BUTTON_COMMAND, 1, 1);
+	}
+	else if (elev_get_button_signal(BUTTON_COMMAND, 2)) {		// Order button 3rd floor pressed
 		array[2][2] = 1;
-	else if (elev_get_button_signal(BUTTON_COMMAND, 3))		// Order button 4th floor pressed
+		elev_set_button_lamp(BUTTON_COMMAND, 2, 1);
+	}
+	else if (elev_get_button_signal(BUTTON_COMMAND, 3)) {		// Order button 4th floor pressed
 		array[3][2] = 1;
+		elev_set_button_lamp(BUTTON_COMMAND, 3, 1);
+	}
 	return;
 }
 
@@ -108,6 +125,7 @@ check_up_down_button_pressed(int array[4][3], int floor) {
 	return 0;
 }
 
+/**
 void
 set_outside_order_lights(int up_or_down, int floor, int on_or_off)
 {
@@ -153,6 +171,8 @@ set_floor_order_lights(int floor, int on_or_off)
 		elev_set_button_lamp(BUTTON_COMMAND, floor, on_or_off);
 	}
 }
+*/
+
 
 
 

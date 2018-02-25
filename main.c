@@ -1,6 +1,7 @@
 #include "elev.h"
 #include <stdio.h>
 #include <time.h>
+#include <stdbool.h>
 
 // Own header files
 #include "ownfuncs.h"
@@ -27,16 +28,11 @@ int main()
 
 	@var motor_direction is last direction, is -1 if DIRN_DOWN, 1 if DIRN_UP
     */
-    int order_list[N_FLOORS][N_BUTTONS] = {0};
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 3; j++) {
-            printf("%d", order_list[i][j]);
-        }
-        printf("\n");
-    }
-/**   
+    int order_list[N_FLOORS][N_BUTTONS] = {{0},{0},{0}};
+
+
 	// Spec. 4.1 "Oppstart"
-    int* motor_direction;
+    int* motor_direction = NULL;
 
     printf("Press STOP button to stop elevator and exit program.\n");
     elev_set_motor_direction(DIRN_UP);
@@ -50,60 +46,121 @@ int main()
         }
     }
 
-//    int* elevator_caller = -1;
+    int last_passed_floor = elev_get_floor_sensor_signal();
+    int order_floor = -1;
+    bool order_found = false;
 
-
-    
 
     // MAIN LOOP       Spec. 4.1 -- 4.7
 
-    
 	while (1) {
     	change_of_motor_direction(motor_direction); 
         set_floor_lights();
 
-        // Check if buttons are pressed
-        set_order_list(order_list);
 
-*/
+        if(elev_get_floor_sensor_signal() != -1) {
+            last_passed_floor = elev_get_floor_sensor_signal();
+        }
 
-        /**
-		Update function runs all the time
 
-		Checks if a button is pressed through elev_get_button_signal()
-		and sets button lamps. Needs to update the matrix with set_order_list()
-        */
-
-/**        
-        //STOP STATE          Spec. 4.6
+        
+        // STOP STATE          Spec. 4.6
         if (elev_get_stop_signal()) {
             elev_set_stop_lamp(1);
             elev_set_motor_direction(DIRN_STOP);
 
-            while(get_stop_button()) {
+            while(elev_get_stop_signal()) {
                 continue;
             }
+
             elev_set_stop_lamp(0);
 
             // Erase orders
             for(int i = 0; i < 4; i++) {
-            	for(int j = 0; j < 3; j++) {
-            		order_list[i][j] = 0;
-            	}
+                for(int j = 0; j < 3; j++) {
+                    order_list[i][j] = 0;
+                }
             }
             
             // Checks if array has order
             while(1) {
-            	for(int floor = 0; floor < 4; floor++) {
-            		if(check_up_down_button_pressed(order_list, floor) != 0)
-            			break;
-            	}
+                for(int floor = 0; floor < 4; floor++) {
+                    if(check_up_down_button_pressed(order_list, floor) != 0)
+                        break;
+                }
+                
             }   
-	   	}
+        }
+
+
+        // IDLE STATE
+        do {
+            // Check if buttons are pressed and sets lights
+            set_order_list_and_lights(order_list);
+
+            for(int i = 0; i < 4; i++) {
+                for(int j = 0; j < 3; j++) {
+                    if(order_list[i][j] == 1){
+                        order_found = true;
+                        break;
+                    }
+                }
+                if(order_found) {
+                    break;
+                }
+            }
+        }while(!order_found);
+
+
+//        for(int i = 0; i < 4; i++) {
+//               for(int j = 0; j < 3; j++) {
+//                   printf("%d", order_list[i][j]);
+//                }
+//                printf("\n");
+//            }
 
 
 	   	// ORDER STATE
+        int current_floor = elev_get_floor_sensor_signal();
 
+        if(current_floor != -1) {
+            if(order_list[current_floor][0] == 1 || order_list[current_floor][1] == 1
+                || order_list[current_floor][2] == 1) {
+                elev_set_motor_direction(DIRN_STOP);
+                open_close_door();      // Cannot update order_list here by now ? Necessary ?
+                
+                // Erases row, to indicate people entering/leaving
+                for(int button = 0; button < 3; button++) {
+                    order_list[current_floor][button] = 0;
+                }
+            }
+
+            // Search through order_list for an up/down order
+            for(int i = 0; i < 4; i++) {
+                for(int j = 0; j < 3; j++) {
+                    if(order_list[i][j] == 1) {
+                        order_floor = i;
+                        order_found = true;
+                        break;
+                    }
+                }
+                if(order_floor != -1) {
+                    break;
+                }
+
+            }
+
+            if(order_floor > last_passed_floor) {
+                elev_set_motor_direction(DIRN_UP);
+                *motor_direction = 1;
+            }
+        }
+
+
+
+
+
+/*****
 	   	// Sends elevevator to first up/down request ?
 	   	if (elev_get_floor_sensor_signal() != -1) {
 	   		for(int i = 0; i < 4; i++) {
@@ -132,10 +189,10 @@ int main()
 
 
         }
-
+*/
 
     // End of while loop
     }
-*/
+  
     return 0;
 }
