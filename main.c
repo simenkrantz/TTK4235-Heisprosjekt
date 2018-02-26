@@ -60,7 +60,6 @@ int main()
 
 //        printf("%s", "Main loop\n");
 
-        // Get last_passed _floor from lights ? Always the same
         if(elev_get_floor_sensor_signal() != -1) {
             last_passed_floor = elev_get_floor_sensor_signal();
         }
@@ -89,8 +88,16 @@ int main()
                     if(check_up_down_button_pressed(order_list, floor) != 0)
                         break;
                 }
-                
-            }   
+            }
+
+            for(int i = 0; i < 4; i++) {
+               for(int j = 0; j < 3; j++) {
+                   printf("%d", order_list[i][j]);
+                }
+                printf("\n");
+            }
+            return -1;
+
         }
 
 
@@ -133,7 +140,7 @@ int main()
 
 	   	// ORDER STATE
         // WHILE LOOP
-        // NEED stop logic 		
+        // NEED STOP 		
         while(last_passed_floor != order_floor) {
         	
         	set_order_list_and_lights(order_list);
@@ -165,12 +172,30 @@ int main()
 
 	        set_floor_lights();
 
-	        // Something weird in this if
+	        
 	        if(order_list[last_passed_floor][index] == 1 || order_list[last_passed_floor][2] == 1) {
                 elev_set_motor_direction(DIRN_STOP);
+
+                if(last_passed_floor == 0) {
+	                elev_set_button_lamp(BUTTON_COMMAND, last_passed_floor, 0);
+	                elev_set_button_lamp(BUTTON_CALL_UP, last_passed_floor, 0);
+                }
+                else if(last_passed_floor == 3) {
+                	elev_set_button_lamp(BUTTON_CALL_DOWN, last_passed_floor, 0);
+                	elev_set_button_lamp(BUTTON_COMMAND, last_passed_floor, 0);
+                }
+                else if(last_passed_floor == 1 || last_passed_floor == 2) {
+	                elev_set_button_lamp(BUTTON_CALL_UP, last_passed_floor, 0);
+	                elev_set_button_lamp(BUTTON_CALL_DOWN, last_passed_floor, 0);
+	                elev_set_button_lamp(BUTTON_COMMAND, last_passed_floor, 0);
+	            }
+
                 open_close_door();      // Cannot update order_list here by now ? Necessary ?
+                
                 order_list[last_passed_floor][index] = 0;
                 order_list[last_passed_floor][2] = 0;
+
+
 
                 order_found = false;
 
