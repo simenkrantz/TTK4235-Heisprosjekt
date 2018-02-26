@@ -51,7 +51,6 @@ open_close_door(void)
 }
 
 
-///////// ADD LIGHT LOGIC
 void
 set_order_list_and_lights(int array[4][3])
 {
@@ -125,54 +124,24 @@ check_up_down_button_pressed(int array[4][3], int floor) {
 	return 0;
 }
 
-/**
-void
-set_outside_order_lights(int up_or_down, int floor, int on_or_off)
-{
-	// Turning lights off
-	if(on_or_off == 0) {
-
-		// Turn off the DOWN button
-		if(up_or_down == 0) {
-			elev_set_button_lamp(BUTTON_CALL_DOWN, floor, on_or_off);
-		}
-
-		// Turn off the UP button
-		else {
-			elev_set_button_lamp(BUTTON_CALL_UP, floor, on_or_off);
-		}
-	}
-
-	// Turning lights on
-	else {
-
-		// Turn on the DOWN button
-		if(up_or_down == 0) {
-			elev_set_button_lamp(BUTTON_CALL_DOWN, floor, on_or_off);
-		}
-
-		// Turn on the UP button
-		else {
-			elev_set_button_lamp(BUTTON_CALL_UP, floor, on_or_off);
-		}
-	}
-}
 
 void
-set_floor_order_lights(int floor, int on_or_off)
+turn_off_lights(int floor, int* motor_dir)
 {
-	// Turns light off
-	if (on_or_off == 0) {
-		elev_set_button_lamp(BUTTON_COMMAND, floor, on_or_off);
+	if(floor == 0) {
+	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
+	    elev_set_button_lamp(BUTTON_CALL_UP, floor, 0);
+    }
+    else if(floor == 3) {
+       	elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
+       	elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
+    }
+    else if((floor == 1 || floor == 2) && (*motor_dir == -1)) {
+	    elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
+	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
 	}
-
-	// Turns light on
-	else {
-		elev_set_button_lamp(BUTTON_COMMAND, floor, on_or_off);
+	else if((floor == 1 || floor == 2) && (*motor_dir == 1)) {
+	    elev_set_button_lamp(BUTTON_CALL_UP, floor, 0);
+	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
 	}
 }
-*/
-
-
-
-

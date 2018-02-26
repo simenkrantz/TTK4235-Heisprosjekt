@@ -61,8 +61,12 @@ Opens the door, sets the doorlight for 3 seconds.
 void
 open_close_door(void);
 
-
-
+/**
+Turns off all lights
+@param floor is the given floor we wants to turn off the lights in
+*/
+void
+turn_off_lights(int floor, int* motor_dir);
 
 
 

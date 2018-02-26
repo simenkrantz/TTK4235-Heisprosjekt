@@ -61,6 +61,8 @@ int main()
 //        printf("%s", "Main loop\n");
 
         if(elev_get_floor_sensor_signal() != -1) {
+
+        	// THIS IS TROUBLE SOMETIMES ! WHY ?
             last_passed_floor = elev_get_floor_sensor_signal();
         }
         
@@ -105,9 +107,13 @@ int main()
         do {
             // Check if buttons are pressed and sets lights
             set_order_list_and_lights(order_list);
+
+
+            // THIS LOGIC DOESNT WORK
             if(elev_get_floor_sensor_signal() != -1 && order_found == false) {
             	elev_set_motor_direction(DIRN_STOP);
             }
+
 
             for(int i = 0; i < 4; i++) {
                 for(int j = 0; j < 3; j++) {
@@ -139,8 +145,13 @@ int main()
 */
 
 	   	// ORDER STATE
-        // WHILE LOOP
-        // NEED STOP 		
+        // NEED STOP
+
+        // Logic to stop in 1st and 4th
+        // When ordering from 1st/4th, it goes in an infinte loop!
+        // Ordering to 1st/4th is OK 
+
+
         while(last_passed_floor != order_floor) {
         	
         	set_order_list_and_lights(order_list);
@@ -164,7 +175,10 @@ int main()
 
 
 	        if(elev_get_floor_sensor_signal() != -1) {
+
+	        	// THIS IS TROUBLE SOMETIMES! WHY ?
 	            last_passed_floor = elev_get_floor_sensor_signal();
+
 
 	            printf("%d, %s", last_passed_floor, "Inside order state\n");
 	        }
@@ -176,19 +190,9 @@ int main()
 	        if(order_list[last_passed_floor][index] == 1 || order_list[last_passed_floor][2] == 1) {
                 elev_set_motor_direction(DIRN_STOP);
 
-                if(last_passed_floor == 0) {
-	                elev_set_button_lamp(BUTTON_COMMAND, last_passed_floor, 0);
-	                elev_set_button_lamp(BUTTON_CALL_UP, last_passed_floor, 0);
-                }
-                else if(last_passed_floor == 3) {
-                	elev_set_button_lamp(BUTTON_CALL_DOWN, last_passed_floor, 0);
-                	elev_set_button_lamp(BUTTON_COMMAND, last_passed_floor, 0);
-                }
-                else if(last_passed_floor == 1 || last_passed_floor == 2) {
-	                elev_set_button_lamp(BUTTON_CALL_UP, last_passed_floor, 0);
-	                elev_set_button_lamp(BUTTON_CALL_DOWN, last_passed_floor, 0);
-	                elev_set_button_lamp(BUTTON_COMMAND, last_passed_floor, 0);
-	            }
+
+                // DELETE ONLY LIGHTS CORRESPONDING TO DELETED ORDER_LIST ELEMENT
+                turn_off_lights(last_passed_floor, motor_direction);
 
                 open_close_door();      // Cannot update order_list here by now ? Necessary ?
                 
@@ -213,7 +217,6 @@ int main()
 
 
 	    }
-
 
 /**
 From here, check our direction and the corresponding column according to present floor
