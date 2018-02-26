@@ -35,8 +35,6 @@ int main()
 
     printf("Press STOP button to stop elevator and exit program.\n");
     elev_set_motor_direction(DIRN_UP);
-
-    // WHy does this work?
     int *motor_direction = &(int){1};
 
 
@@ -59,6 +57,8 @@ int main()
 	while (1) {
     	change_of_motor_direction(motor_direction); 
         set_floor_lights();
+
+//        printf("%s", "Main loop\n");
 
         // Get last_passed _floor from lights ? Always the same
         if(elev_get_floor_sensor_signal() != -1) {
@@ -98,12 +98,18 @@ int main()
         do {
             // Check if buttons are pressed and sets lights
             set_order_list_and_lights(order_list);
+            if(elev_get_floor_sensor_signal() != -1 && order_found == false) {
+            	elev_set_motor_direction(DIRN_STOP);
+            }
 
             for(int i = 0; i < 4; i++) {
                 for(int j = 0; j < 3; j++) {
                     if(order_list[i][j] == 1){
                         order_found = true;
                         order_floor = i;
+
+                        printf("Order floor is %d\n", order_floor);
+
                         break;
                     }
                 }
@@ -113,22 +119,24 @@ int main()
             }
         }while(!order_found);
 
+/**
+        for(int i = 0; i < 4; i++) {
+               for(int j = 0; j < 3; j++) {
+                   printf("%d", order_list[i][j]);
+                }
+                printf("\n");
+            }
 
-//        for(int i = 0; i < 4; i++) {
-//               for(int j = 0; j < 3; j++) {
-//                   printf("%d", order_list[i][j]);
-//                }
-//                printf("\n");
-//            }
 
+        printf("%d", last_passed_floor);
+*/
 
 	   	// ORDER STATE
         // WHILE LOOP
         // NEED stop logic 		
         while(last_passed_floor != order_floor) {
-        	//STOP logic
+        	
         	set_order_list_and_lights(order_list);
-        	set_floor_lights();
 
 	        if(order_floor > last_passed_floor) {
 	            elev_set_motor_direction(DIRN_UP);
@@ -148,15 +156,35 @@ int main()
 	        }
 
 
+	        if(elev_get_floor_sensor_signal() != -1) {
+	            last_passed_floor = elev_get_floor_sensor_signal();
 
+	            printf("%d, %s", last_passed_floor, "Inside order state\n");
+	        }
+
+
+	        set_floor_lights();
+
+	        // Something weird in this if
 	        if(order_list[last_passed_floor][index] == 1 || order_list[last_passed_floor][2] == 1) {
                 elev_set_motor_direction(DIRN_STOP);
                 open_close_door();      // Cannot update order_list here by now ? Necessary ?
                 order_list[last_passed_floor][index] = 0;
                 order_list[last_passed_floor][2] = 0;
 
-                elev_set_button_lamp(BUTTON_COMMAND, last_passed_floor, 0);
+                order_found = false;
+
+
+                for(int i = 0; i < 4; i++) {
+	               for(int j = 0; j < 3; j++) {
+	                   printf("%d", order_list[i][j]);
+	                }
+	                printf("\n");
+	            }
+
             }
+
+//            change_of_motor_direction(motor_direction);
 
 
 	    }
@@ -165,7 +193,6 @@ int main()
 /**
 From here, check our direction and the corresponding column according to present floor
 If BUTTON_COMMAND is high, stop anyways
-*/
 
             // Search through order_list for an up/down order
             for(int i = 0; i < 4; i++) {
@@ -181,7 +208,7 @@ If BUTTON_COMMAND is high, stop anyways
                 }
 
             }
-
+*/
 
 
 
