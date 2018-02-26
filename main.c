@@ -32,10 +32,13 @@ int main()
 
 
 	// Spec. 4.1 "Oppstart"
-    int* motor_direction = NULL;
 
     printf("Press STOP button to stop elevator and exit program.\n");
     elev_set_motor_direction(DIRN_UP);
+
+    // WHy does this work?
+    int *motor_direction = &(int){1};
+
 
     while (1) {
         change_of_motor_direction(motor_direction);
@@ -57,12 +60,10 @@ int main()
     	change_of_motor_direction(motor_direction); 
         set_floor_lights();
 
-
+        // Get last_passed _floor from lights ? Always the same
         if(elev_get_floor_sensor_signal() != -1) {
             last_passed_floor = elev_get_floor_sensor_signal();
         }
-
-
         
         // STOP STATE          Spec. 4.6
         if (elev_get_stop_signal()) {
@@ -102,6 +103,7 @@ int main()
                 for(int j = 0; j < 3; j++) {
                     if(order_list[i][j] == 1){
                         order_found = true;
+                        order_floor = i;
                         break;
                     }
                 }
@@ -121,31 +123,49 @@ int main()
 
 
 	   	// ORDER STATE
-        int current_floor = elev_get_floor_sensor_signal();
+        // WHILE LOOP
+        // NEED stop logic 		
+        while(last_passed_floor != order_floor) {
+        	//STOP logic
+        	set_order_list_and_lights(order_list);
+        	set_floor_lights();
+
+	        if(order_floor > last_passed_floor) {
+	            elev_set_motor_direction(DIRN_UP);
+	            *motor_direction = 1;
+	        }
+	        else if(order_floor < last_passed_floor) {
+	        	elev_set_motor_direction(DIRN_DOWN);
+	        	*motor_direction = -1;
+	        }
+
+	        int index = -1;
+	        if(*motor_direction == 1) {
+	        	index = 0;
+	        }
+	        else if(*motor_direction == -1) {
+	        	index = 1;
+	        }
 
 
-        if(order_floor > last_passed_floor) {
-            elev_set_motor_direction(DIRN_UP);
-            *motor_direction = 1;
-        }
+
+	        if(order_list[last_passed_floor][index] == 1 || order_list[last_passed_floor][2] == 1) {
+                elev_set_motor_direction(DIRN_STOP);
+                open_close_door();      // Cannot update order_list here by now ? Necessary ?
+                order_list[last_passed_floor][index] = 0;
+                order_list[last_passed_floor][2] = 0;
+
+                elev_set_button_lamp(BUTTON_COMMAND, last_passed_floor, 0);
+            }
+
+
+	    }
 
 
 /**
 From here, check our direction and the corresponding column according to present floor
 If BUTTON_COMMAND is high, stop anyways
 */
-
-        if(current_floor != -1) {
-            if(order_list[current_floor][0] == 1 || order_list[current_floor][1] == 1
-                || order_list[current_floor][2] == 1) {
-                elev_set_motor_direction(DIRN_STOP);
-                open_close_door();      // Cannot update order_list here by now ? Necessary ?
-                
-                // Erases row, to indicate people entering/leaving
-                for(int button = 0; button < 3; button++) {
-                    order_list[current_floor][button] = 0;
-                }
-            }
 
             // Search through order_list for an up/down order
             for(int i = 0; i < 4; i++) {
@@ -161,7 +181,6 @@ If BUTTON_COMMAND is high, stop anyways
                 }
 
             }
-        }
 
 
 
