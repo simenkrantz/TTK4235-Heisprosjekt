@@ -16,6 +16,8 @@ set_floor_lights(void)
         }
 }
 
+
+// NEED TO ORDER IN THIS FUNCTION!
 void
 time_delay(int millisecs)
 {
@@ -25,9 +27,13 @@ time_delay(int millisecs)
 	now = then = clock();
 	while ((now-then) < pause) {
 		now = clock();
+
+		// Have set_order_list_and_lights() here ?
 	}
 }
 
+
+// DO we need this ? 
 void
 change_of_motor_direction(int* motor_dir)
 {
@@ -97,6 +103,7 @@ set_order_list_and_lights(int array[4][3])
 	return;
 }
 
+// We dont use this yet
 int
 check_up_down_button_pressed(int array[4][3], int floor) {
 	switch(floor) {
@@ -126,7 +133,7 @@ check_up_down_button_pressed(int array[4][3], int floor) {
 
 
 void
-turn_off_lights(int floor, int* motor_dir)
+turn_off_button_lights(int floor, int* motor_dir)
 {
 	if(floor == 0) {
 	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
