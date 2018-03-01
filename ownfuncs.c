@@ -33,21 +33,6 @@ time_delay(int millisecs)
 }
 
 
-// DO we need this ? 
-void
-change_of_motor_direction(int* motor_dir)
-{
-	// Change direction when we reach top/bottom floor
-        if (elev_get_floor_sensor_signal() == N_FLOORS - 1) {
-            elev_set_motor_direction(DIRN_DOWN);
-            *motor_dir = -1;
-        } else if (elev_get_floor_sensor_signal() == 0) {
-            elev_set_motor_direction(DIRN_UP);
-            *motor_dir = 1;
-        }
-}
-
-
 void
 open_close_door(void)
 {
@@ -103,6 +88,7 @@ set_order_list_and_lights(int array[4][3])
 	return;
 }
 
+
 // We dont use this yet
 int
 check_up_down_button_pressed(int array[4][3], int floor) {
@@ -150,5 +136,106 @@ turn_off_button_lights(int floor, int* motor_dir)
 	else if((floor == 1 || floor == 2) && (*motor_dir == 1)) {
 	    elev_set_button_lamp(BUTTON_CALL_UP, floor, 0);
 	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
+	}
+}
+
+void
+stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
+{
+	if(elev_get_floor_sensor_signal() != -1 && elev_get_stop_signal()) {
+
+		elev_set_motor_direction(DIRN_STOP);
+
+		while(elev_get_stop_signal()) {
+			elev_set_stop_lamp(1);
+			continue;
+		}
+
+		elev_set_stop_lamp(0);
+
+		open_close_door();
+
+		// Erase orders, turn off lights
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < 3; j++) {
+                array[i][j] = 0;
+        	}
+        	if(i == 0) {
+        		elev_set_button_lamp(BUTTON_CALL_UP, i, 0);
+        	}
+        	else if(i == 3) {
+        		elev_set_button_lamp(BUTTON_CALL_DOWN, i, 0);
+        	}
+        	else {
+        		elev_set_button_lamp(BUTTON_CALL_UP, i, 0);
+        		elev_set_button_lamp(BUTTON_CALL_DOWN, i, 0);
+        	}
+        	elev_set_button_lamp(BUTTON_COMMAND, i, 0);
+        }
+
+
+		//PRINT
+        printf("\n STOP STATE\n");
+        for(int i = 0; i < 4; i++) {
+	        for(int j = 0; j < 3; j++) {
+	            printf("%d", array[i][j]);
+	        }
+	        printf("\n");
+        }
+	}
+
+	else if(elev_get_stop_signal()) {
+
+		elev_set_motor_direction(DIRN_STOP);
+
+		while(elev_get_stop_signal()) {
+			elev_set_stop_lamp(1);
+			continue;
+		}
+
+		elev_set_stop_lamp(0);
+
+		// Erase orders, turn off lights
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < 3; j++) {
+                array[i][j] = 0;
+        	}
+
+        	if(i == 0) {
+        		elev_set_button_lamp(BUTTON_CALL_UP, i, 0);
+        	}
+        	else if(i == 3) {
+        		elev_set_button_lamp(BUTTON_CALL_DOWN, i, 0);
+        	}
+        	else {
+        		elev_set_button_lamp(BUTTON_CALL_UP, i, 0);
+        		elev_set_button_lamp(BUTTON_CALL_DOWN, i, 0);
+        	}
+        	elev_set_button_lamp(BUTTON_COMMAND, i, 0);
+        }
+
+
+        
+        if(ord_floor == last_floor) {
+        	if(*motor_dir == -1) {
+        		elev_set_motor_direction(DIRN_UP);
+        		*motor_dir = 1;
+        	}
+        	else if(*motor_dir == 1) {
+        		elev_set_motor_direction(DIRN_DOWN);
+        		*motor_dir = -1;
+        	}
+        }
+
+
+
+        //PRINT
+        printf("\n STOP STATE\n");
+        for(int i = 0; i < 4; i++) {
+	        for(int j = 0; j < 3; j++) {
+	            printf("%d", array[i][j]);
+	        }
+	        printf("\n");
+	    }
 	}
 }

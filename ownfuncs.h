@@ -56,6 +56,8 @@ void
 turn_off_button_lights(int floor, int* motor_dir);
 
 
+void
+stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir);
 
 
 #endif
