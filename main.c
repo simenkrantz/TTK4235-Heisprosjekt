@@ -74,16 +74,19 @@ int main()
             // Check if buttons are pressed and sets lights
             set_order_list_and_lights(order_list);
 
-
-            stop_state(order_list, order_floor, last_passed_floor, motor_direction);
-
+            if(elev_get_stop_signal()) {
+            	stop_state(order_list, order_floor, last_passed_floor, motor_direction);
+            	order_found = false;
+            	order_floor = -1;
+            }
+       		
 
             if(elev_get_floor_sensor_signal() != -1 && order_found == false) {
             	elev_set_motor_direction(DIRN_STOP);
             }
 
 
-            for(int i = 0; i < 4; i++) {
+            for(int i = 3; i >= 0; i--) {
                 for(int j = 0; j < 3; j++) {
                     if(order_list[i][j] == 1){
                         order_found = true;
@@ -103,14 +106,17 @@ int main()
 
 
 	   	// ORDER STATE
-	   	/**
+	   		/**
 
-	   	*/
-        while(last_passed_floor != order_floor) {
+	   		*/
+
+	   	// while(last_passed_floor != order_floor)
+        while(order_floor != -1) {
 
         	if(elev_get_stop_signal()) {
         		stop_state(order_list, order_floor, last_passed_floor, motor_direction);
         		order_found = false;
+        		order_floor = -1;
         		break;
         	}
         	
@@ -149,37 +155,39 @@ int main()
 	            else if(last_passed_floor == 3) {
 	            	index = 1;
 	            }
-
-
-	            printf("%d, %s", last_passed_floor, "Inside order state\n");
 	        }
 	        
-	        if(((order_list[last_passed_floor][index] == 1) || (order_list[last_passed_floor][2] == 1))
-	        	&& (elev_get_floor_sensor_signal() != -1)) {
+	        if((order_list[last_passed_floor][index] == 1) || (order_list[last_passed_floor][2] == 1)) {
                 elev_set_motor_direction(DIRN_STOP);
 
 
                 // DELETE ONLY LIGHTS CORRESPONDING TO DELETED ORDER_LIST ELEMENT
                 turn_off_button_lights(last_passed_floor, motor_direction);
 
-                open_close_door();      // Cannot update order_list here by now ? Necessary ?
+                open_close_door(order_list);
                 
                 order_list[last_passed_floor][index] = 0;
                 order_list[last_passed_floor][2] = 0;
 
 
-
+                order_floor = -1;
                 order_found = false;
 
                 // PRINT
+                printf("Taken care of order \n");
                 for(int i = 0; i < 4; i++) {
 	                for(int j = 0; j < 3; j++) {
 	                   printf("%d", order_list[i][j]);
 	                }
 	                printf("\n");
 	            }
+	            printf("\n");
+
+
+            	// MAY NEED BREAK HERE?
             }
 	    }
+
     // End of while loop
     }
   

@@ -4,8 +4,8 @@
 
 #include "ownfuncs.h"
 
-// Delay time in milliseconds
-#define DELAY_TIME 3000
+
+static int delay_time = 3;
 
 void
 set_floor_lights(void)
@@ -17,31 +17,25 @@ set_floor_lights(void)
 }
 
 
-// NEED TO ORDER IN THIS FUNCTION!
 void
-time_delay(int millisecs)
-{
-	long pause;
-	clock_t now, then;
-	pause = millisecs*(CLOCKS_PER_SEC/1000);
-	now = then = clock();
-	while ((now-then) < pause) {
-		now = clock();
-
-		// Have set_order_list_and_lights() here ?
-	}
-}
-
-
-void
-open_close_door(void)
+open_close_door(int array[4][3])
 {
 	elev_set_door_open_lamp(1);
-	time_delay(DELAY_TIME);
+	time_t start_time = time(NULL);
+
+	while(1) {
+		time_t current_time = time(NULL);
+		if((current_time - start_time) == delay_time) {
+			break;
+		}
+		set_order_list_and_lights(array);
+	}
+
 	elev_set_door_open_lamp(0);
 }
 
 
+// FIX THIS WITH TWO FOR-LOOPS
 void
 set_order_list_and_lights(int array[4][3])
 {
@@ -152,8 +146,7 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
 		}
 
 		elev_set_stop_lamp(0);
-
-		open_close_door();
+		open_close_door(array);
 
 		// Erase orders, turn off lights
         for(int i = 0; i < 4; i++) {
@@ -172,7 +165,6 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
         	}
         	elev_set_button_lamp(BUTTON_COMMAND, i, 0);
         }
-
 
 		//PRINT
         printf("\n STOP STATE\n");
@@ -214,8 +206,6 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
         	elev_set_button_lamp(BUTTON_COMMAND, i, 0);
         }
 
-
-        
         if(ord_floor == last_floor) {
         	if(*motor_dir == -1) {
         		elev_set_motor_direction(DIRN_UP);
@@ -226,8 +216,6 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
         		*motor_dir = -1;
         	}
         }
-
-
 
         //PRINT
         printf("\n STOP STATE\n");

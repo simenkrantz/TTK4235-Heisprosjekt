@@ -7,15 +7,11 @@
 void 
 set_floor_lights(void);
 
+/**
 
-// Delays action for a given number of milliseconds.
+*/
 void
-time_delay(int millisecs);
-
-
-// Turn direction at endpoints.
-void
-change_of_motor_direction(int* motor_dir);
+open_close_door(int array[4][3]);
 
 
 /**
@@ -43,7 +39,7 @@ check_up_down_button_pressed(int array[4][3], int floor);
 Opens the door, sets the doorlight for 3 seconds.
 */
 void
-open_close_door(void);
+open_close_door(int array[4][3]);
 
 /**
 Turns off all lights in the given direction the elevator have.
