@@ -70,7 +70,7 @@ int main()
         	/**
 
         	*/
-        do {
+        while(!order_found) {
             // Check if buttons are pressed and sets lights
             set_order_list_and_lights(order_list);
 
@@ -86,7 +86,7 @@ int main()
             }
 
 
-            for(int i = 3; i >= 0; i--) {
+            for(int i = 0; i < 4; i++) {
                 for(int j = 0; j < 3; j++) {
                     if(order_list[i][j] == 1){
                         order_found = true;
@@ -101,7 +101,7 @@ int main()
                     break;
                 }
             }
-        }while(!order_found);
+        }
 
 
 
@@ -169,9 +169,21 @@ int main()
                 order_list[last_passed_floor][index] = 0;
                 order_list[last_passed_floor][2] = 0;
 
+                /**
+				DETTE MÅ INN
 
-                order_floor = -1;
-                order_found = false;
+                if (motor_dir == up && (etasje er 2. eller 3.)) {
+					for i > last_passed; i < 4
+                }
+                else if (motoro_dir == down && (etasje er 2. eller 3.)) {
+					for i < last_passed: i >= 0
+                }
+                else
+
+                */
+
+//                order_floor = -1;
+//                order_found = false;
 
                 // PRINT
                 printf("Taken care of order \n");

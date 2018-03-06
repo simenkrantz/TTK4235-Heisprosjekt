@@ -21,10 +21,10 @@ void
 open_close_door(int array[4][3])
 {
 	elev_set_door_open_lamp(1);
-	time_t start_time = time(NULL);
+	time_t start_time = time(NULL), current_time;
 
 	while(1) {
-		time_t current_time = time(NULL);
+		current_time = time(NULL);
 		if((current_time - start_time) == delay_time) {
 			break;
 		}
