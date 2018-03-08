@@ -1,6 +1,7 @@
 #include "elev.h"
 #include <time.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "ownfuncs.h"
 
@@ -32,6 +33,36 @@ open_close_door(int array[4][3])
 	}
 
 	elev_set_door_open_lamp(0);
+}
+
+
+void
+set_motor_direction(int order_floor, int last_floor, int* motor_dir)
+{
+	if(order_floor > last_floor) {
+	    elev_set_motor_direction(DIRN_UP);
+	    *motor_dir = 1;
+	}
+	else if(order_floor < last_floor) {
+	   	elev_set_motor_direction(DIRN_DOWN);
+	   	*motor_dir = -1;
+	}
+}
+
+
+int
+get_matrix_index(int* motor_dir, int last_floor)
+{
+	int value = -1;
+	if(last_floor == 0)
+		value = 0;
+	else if(last_floor == 3)
+		value = 1;
+	else if(*motor_dir == 1)
+	   	value = 0;
+	else if(*motor_dir == -1)
+	   	value = 1;
+	return value;
 }
 
 
@@ -77,40 +108,8 @@ set_order_list_and_lights(int array[4][3])
 }
 
 
-
-
-
-// We dont use this yet
-int
-check_up_down_button_pressed(int array[4][3], int floor) {
-	switch(floor) {
-		case 0:
-			if(array[0][0] == 1)
-				return 1;
-			break;
-		case 1:
-			if(array[1][0] == 1)
-				return 1;
-			else if(array[1][1] == 1)
-				return -1;
-			break;
-		case 2:
-			if(array[2][0] == 1)
-				return 1;
-			else if(array[2][1] == 1)
-				return -1;
-			break;
-		case 3:
-			if(array[3][1] == 1)
-				return -1;
-			break;
-	}
-	return 0;
-}
-
-
 void
-turn_off_button_lights(int floor, int* motor_dir)
+turn_off_button_lights(int floor)
 {
 	if(floor == 0) {
 	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
@@ -120,7 +119,14 @@ turn_off_button_lights(int floor, int* motor_dir)
        	elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
        	elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
     }
-    else if((floor == 1 || floor == 2) && (*motor_dir == -1)) {
+    else {
+    	elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
+    	elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
+    	elev_set_button_lamp(BUTTON_CALL_UP, floor, 0);
+    }
+
+	/**
+	else if((floor == 1 || floor == 2) && (*motor_dir == -1)) {
 	    elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
 	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
 	}
@@ -128,11 +134,14 @@ turn_off_button_lights(int floor, int* motor_dir)
 	    elev_set_button_lamp(BUTTON_CALL_UP, floor, 0);
 	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
 	}
+
+	*/
 }
 
-void
+bool
 stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
 {
+	bool emergency_stop = false;
 	if(elev_get_floor_sensor_signal() != -1 && elev_get_stop_signal()) {
 
 		elev_set_motor_direction(DIRN_STOP);
@@ -171,6 +180,7 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
 	        }
 	        printf("\n");
         }
+        emergency_stop = true;
 	}
 
 	else if(elev_get_stop_signal()) {
@@ -222,5 +232,8 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
 	        }
 	        printf("\n");
 	    }
+
+        emergency_stop = true;
 	}
+	return emergency_stop;
 }

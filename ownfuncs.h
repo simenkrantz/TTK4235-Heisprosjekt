@@ -15,6 +15,22 @@ open_close_door(int array[4][3]);
 
 
 /**
+
+*/
+void
+set_motor_direction(int order_floor, int last_floor, int* motor_dir);
+
+
+
+/**
+
+*/
+int
+get_matrix_index(int* motor_dir, int last_floor);
+
+
+
+/**
 Sets the right element in the order array.
 Sets the corresponding button light high.
 @param array takes in array
@@ -49,10 +65,10 @@ the UP light is turned off once the elevator comes back up from 1st floor
 @param motor_dir is the current motor direction
 */
 void
-turn_off_button_lights(int floor, int* motor_dir);
+turn_off_button_lights(int floor);
 
 
-void
+bool
 stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir);
 
 
