@@ -51,17 +51,29 @@ set_motor_direction(int order_floor, int last_floor, int* motor_dir)
 
 
 int
-get_matrix_index(int* motor_dir, int last_floor)
+get_matrix_index(int* motor_dir, int array[4][3], int last_floor)
 {
 	int value = -1;
 	if(last_floor == 0)
 		value = 0;
 	else if(last_floor == 3)
 		value = 1;
-	else if(*motor_dir == 1)
-	   	value = 0;
-	else if(*motor_dir == -1)
-	   	value = 1;
+	else if(*motor_dir == 1){
+	    for(int i = last_floor + 1; i < 4; i++) {
+	    	for(int j = 0; j < 3; j++) {
+	    		if(array[i][j] == 1)
+	    			value = j;
+	   		}
+	   	}
+	}
+	else if(*motor_dir == -1){
+		for(int i = last_floor - 1; i >= 0; i--) {
+	    	for(int j = 0; j < 3; j++) {
+	    		if(array[i][j] == 1)
+	    			value = j;
+       		}
+       	}
+    }
 	return value;
 }
 
@@ -107,6 +119,28 @@ set_order_list_and_lights(int array[4][3])
 	}
 }
 
+/**
+bool
+check_floors_for_further_orders(int floor, int* motor_dir, int array[4][3])
+{
+	if(*motor_dir == 1){
+	    for(int i = floor + 1; i < 4; i++) {
+	    	for(int j = 0; j < 3; j++) {
+	    		if(array[i][j] == 1)
+	    			return true;
+	   		}
+	   	}
+	}
+	else if(*motor_dir == -1){
+		for(int i = floor - 1; i >= 0; i--) {
+	    	for(int j = 0; j < 3; j++) {
+	    		if(array[i][j] == 1)
+	    			return true;
+       		}
+       	}
+    }
+}
+*/
 
 void
 turn_off_button_lights(int floor)

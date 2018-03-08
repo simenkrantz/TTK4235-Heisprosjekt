@@ -120,14 +120,12 @@ int main()
         	set_order_list_and_lights(order_list);
         	set_floor_lights();
 	        set_motor_direction(order_floor, last_passed_floor, motor_direction);
-	        int index = get_matrix_index(motor_direction, last_passed_floor);
+	        int index = get_matrix_index(motor_direction, order_list, last_passed_floor);
 	        
 
 	        current_floor = elev_get_floor_sensor_signal();
 	        if(current_floor != -1) {
 	            last_passed_floor = current_floor;
-
-	            //Specifically checking UP button 1st floor, DOWN button 4th floor
 	            if(last_passed_floor == 0) {
 	            	index = 0;
 	            }
@@ -137,14 +135,12 @@ int main()
 	        }
 	        
 
-	        if((((order_list[last_passed_floor][index] == 1) || (order_list[last_passed_floor][2] == 1))
-	        	&& elev_get_floor_sensor_signal() != -1) || last_passed_floor == order_floor) {
+
+	        if((order_list[last_passed_floor][index] == 1 && elev_get_floor_sensor_signal() != -1) 
+	        	|| last_passed_floor == order_floor) {
+
                 elev_set_motor_direction(DIRN_STOP);
-
-
-                // DELETE ONLY LIGHTS CORRESPONDING TO DELETED ORDER_LIST ELEMENT
                 turn_off_button_lights(last_passed_floor);
-
                 open_close_door(order_list);
 
                 for(int i = 0; i < 3; i++){

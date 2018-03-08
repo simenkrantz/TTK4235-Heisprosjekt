@@ -26,7 +26,7 @@ set_motor_direction(int order_floor, int last_floor, int* motor_dir);
 
 */
 int
-get_matrix_index(int* motor_dir, int last_floor);
+get_matrix_index(int* motor_dir, int array[4][3], int last_floor);
 
 
 
@@ -56,6 +56,14 @@ Opens the door, sets the doorlight for 3 seconds.
 */
 void
 open_close_door(int array[4][3]);
+
+
+/**
+
+
+bool
+check_floors_for_further_orders(int floor, int* motor_dir, int array[4][3]);
+*/
 
 /**
 Turns off all lights in the given direction the elevator have.
