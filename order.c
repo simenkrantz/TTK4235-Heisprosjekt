@@ -87,5 +87,3 @@ stop_handling_at_order_floor(int* motor_dir, int array[4][3], int index, int las
     turn_off_button_lights(last_floor);
 }
 
-
-

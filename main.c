@@ -8,7 +8,6 @@
 #include "emergency_stop.h"
 #include "controller.h"
 
-
 // Number of buttons for each floor
 #define N_BUTTONS 3
 
@@ -31,11 +30,14 @@ int main()
         }
     }
 
+    enum State {IDLE = 0, ORDER = 1, EMERGENCY_STOP = 2};
+
     int *motor_direction = &(int){1};
     int last_passed_floor = elev_get_floor_sensor_signal();
     int order_floor = -1, current_floor = -1;
-    bool order_found = false, emergency_variable = false;
+    bool order_found = false;
 
+    enum State current_state = IDLE;
 
 	while (1) {
 		set_floor_indicator_lights();
@@ -44,14 +46,77 @@ int main()
             last_passed_floor = current_floor;
         }
         
-        emergency_variable = stop_state(order_list, order_floor, last_passed_floor, motor_direction);
+        switch(current_state) {
+        	case IDLE:
+        		printf("IDLE is 0: %d\n", current_state);
+        		while(!order_found) {
+            		set_order_list_and_corresponding_lights(order_list);
 
+            	if(elev_get_stop_signal()) {
+            		current_state = EMERGENCY_STOP;
+            		order_found = false;
+            		order_floor = -1;
+            		break;
+            	}
+       		
+            	for(int i = 0; i < 4; i++) {
+                	for(int j = 0; j < 3; j++) {
+                    	if(order_list[i][j] == 1){
+                        	order_found = true;
+                        	order_floor = i;
+                        	current_state = ORDER;
+                        	break;
+                    	}
+                	}
+                	if(order_found)
+                    	break;
+            	}
+        	}
 
+        	case ORDER:
+        		printf("ORDER is 1: %d\n", current_state);
+        		while(order_floor != -1) {
+        			if(elev_get_stop_signal()) {
+        				current_state = EMERGENCY_STOP;
+		        		order_found = false;
+		        		order_floor = -1;
+		        		break;
+		        	}
+        	
+        			set_order_list_and_corresponding_lights(order_list);
+		        	set_floor_indicator_lights();
+			        set_motor_direction(order_floor, last_passed_floor, motor_direction);
+			        
+			        current_floor = elev_get_floor_sensor_signal();
+			        if(current_floor != -1) {
+			            last_passed_floor = current_floor;	            
+			        }
+	        
+			        int index = get_matrix_index(motor_direction, order_list, last_passed_floor);
+
+			        if((order_list[last_passed_floor][index] == 1 || order_floor == last_passed_floor) 
+				       	&& elev_get_floor_sensor_signal() != -1) {
+
+			        	stop_handling_at_order_floor(motor_direction, order_list, index, last_passed_floor);
+		        		order_floor = -1;
+		        		order_found = false;
+		        		current_state = IDLE;
+		        		break;
+					}
+			    }
+		    case EMERGENCY_STOP:
+		    	printf("STOP is 2: %d\n", current_state);
+		    	stop_state(order_list, order_floor, last_passed_floor, motor_direction);
+		    	current_state = IDLE;
+		    	break;
+        }
+
+/**
         while(!order_found) {
             set_order_list_and_corresponding_lights(order_list);
 
             if(elev_get_stop_signal()) {
-            	emergency_variable = stop_state(order_list, order_floor, last_passed_floor, motor_direction);
+            	stop_state(order_list, order_floor, last_passed_floor, motor_direction);
             	order_found = false;
             	order_floor = -1;
             }
@@ -69,11 +134,11 @@ int main()
                 }
             }
         }
-
-
+*/
+/**
         while(order_floor != -1) {
         	if(elev_get_stop_signal()) {
-        		emergency_variable = stop_state(order_list, order_floor, last_passed_floor, motor_direction);
+        		stop_state(order_list, order_floor, last_passed_floor, motor_direction);
         		order_found = false;
         		order_floor = -1;
         		break;
@@ -83,7 +148,6 @@ int main()
         	set_floor_indicator_lights();
 	        set_motor_direction(order_floor, last_passed_floor, motor_direction);
 	        
-
 	        current_floor = elev_get_floor_sensor_signal();
 	        if(current_floor != -1) {
 	            last_passed_floor = current_floor;	            
@@ -98,31 +162,8 @@ int main()
         		order_floor = -1;
         		order_found = false;
 			}
-
-/**
-            // After emergency stop
-            if(emergency_variable){
-            	if((order_floor == last_passed_floor && elev_get_floor_sensor_signal() == -1)){
-	            	if(*motor_direction == 1){
-	            		elev_set_motor_direction(DIRN_DOWN);
-	            		*motor_direction = -1;
-	            		printf("%d\n", *motor_direction);
-	            		printf("Inni stopp\n");
-	            	}
-	            	else if(*motor_direction == -1){
-	            		elev_set_motor_direction(DIRN_UP);
-	            		*motor_direction  = 1;
-	            		printf("%d\n", *motor_direction);
-	            		printf("Inni stopp\n");
-	            	}
-	            	else
-	            		elev_set_motor_direction(*motor_direction);
-	            	emergency_variable = false;
-	            }
-            }
-*/
 	    }
+*/	    
     }
-  
     return 0;
 }

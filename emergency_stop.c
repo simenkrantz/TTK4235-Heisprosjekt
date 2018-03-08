@@ -6,14 +6,12 @@
 #include "emergency_stop.h"
 #include "order.h"
 
-bool
+void
 stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
 {
-	bool emergency_stop = false;
 	if(elev_get_floor_sensor_signal() != -1 && elev_get_stop_signal()) {
 
 		elev_set_motor_direction(DIRN_STOP);
-
 		while(elev_get_stop_signal()) {
 			elev_set_stop_lamp(1);
 			continue;
@@ -28,14 +26,11 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
         	}
         	turn_off_button_lights(i);
         }
-
-        emergency_stop = true;
 	}
 
 	else if(elev_get_stop_signal()) {
 
 		elev_set_motor_direction(DIRN_STOP);
-
 		while(elev_get_stop_signal()) {
 			elev_set_stop_lamp(1);
 			continue;
@@ -59,8 +54,5 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
         		*motor_dir = -1;
         	}
         }
-
-        emergency_stop = true;
 	}
-	return emergency_stop;
 }
