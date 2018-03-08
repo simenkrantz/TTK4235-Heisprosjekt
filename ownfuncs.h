@@ -36,7 +36,7 @@ Sets the corresponding button light high.
 @param array takes in array
 */
 
-// CHANGE NAME to and_corresponding_light ?
+// CHANGE NAME to and_corresponding_lights ?
 void
 set_order_list_and_lights(int array[4][3]);
 

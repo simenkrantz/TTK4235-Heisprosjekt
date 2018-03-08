@@ -119,23 +119,11 @@ turn_off_button_lights(int floor)
        	elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
        	elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
     }
-    else {
+    else if(floor == 1 || floor == 2){
     	elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
     	elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
     	elev_set_button_lamp(BUTTON_CALL_UP, floor, 0);
     }
-
-	/**
-	else if((floor == 1 || floor == 2) && (*motor_dir == -1)) {
-	    elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
-	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
-	}
-	else if((floor == 1 || floor == 2) && (*motor_dir == 1)) {
-	    elev_set_button_lamp(BUTTON_CALL_UP, floor, 0);
-	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
-	}
-
-	*/
 }
 
 bool

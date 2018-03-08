@@ -83,9 +83,6 @@ int main()
             }
        		
 
-            if(elev_get_floor_sensor_signal() != -1 && order_found == false) {
-            	elev_set_motor_direction(DIRN_STOP);
-            }
 
 
             for(int i = 0; i < 4; i++) {
@@ -106,13 +103,10 @@ int main()
         }
 
 
-
 	   	// ORDER STATE
 	   		/**
 
 	   		*/
-
-	   	// while(last_passed_floor != order_floor)
         while(order_floor != -1) {
 
         	if(elev_get_stop_signal()) {
@@ -125,10 +119,7 @@ int main()
         	
         	set_order_list_and_lights(order_list);
         	set_floor_lights();
-
 	        set_motor_direction(order_floor, last_passed_floor, motor_direction);
-
-
 	        int index = get_matrix_index(motor_direction, last_passed_floor);
 	        
 
@@ -145,8 +136,9 @@ int main()
 	            }
 	        }
 	        
-	        if(((order_list[last_passed_floor][index] == 1) || (order_list[last_passed_floor][2] == 1))
-	        	&& elev_get_floor_sensor_signal() != -1) {
+
+	        if((((order_list[last_passed_floor][index] == 1) || (order_list[last_passed_floor][2] == 1))
+	        	&& elev_get_floor_sensor_signal() != -1) || last_passed_floor == order_floor) {
                 elev_set_motor_direction(DIRN_STOP);
 
 
@@ -175,6 +167,7 @@ int main()
 
 
 
+
             // After emergency stop
             if(emergency_variable){
             	if((order_floor == last_passed_floor && elev_get_floor_sensor_signal() == -1)){
@@ -195,12 +188,7 @@ int main()
 	            	emergency_variable = false;
 	            }
             }
-            
-
 	    }
-
-
-    // End of while loop
     }
   
     return 0;
