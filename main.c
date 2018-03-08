@@ -3,8 +3,10 @@
 #include <time.h>
 #include <stdbool.h>
 
-// Own header files
-#include "ownfuncs.h"
+
+#include "order.h"
+#include "emergency_stop.h"
+#include "controller.h"
 
 
 // Number of buttons for each floor
