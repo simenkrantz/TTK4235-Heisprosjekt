@@ -119,28 +119,7 @@ set_order_list_and_lights(int array[4][3])
 	}
 }
 
-/**
-bool
-check_floors_for_further_orders(int floor, int* motor_dir, int array[4][3])
-{
-	if(*motor_dir == 1){
-	    for(int i = floor + 1; i < 4; i++) {
-	    	for(int j = 0; j < 3; j++) {
-	    		if(array[i][j] == 1)
-	    			return true;
-	   		}
-	   	}
-	}
-	else if(*motor_dir == -1){
-		for(int i = floor - 1; i >= 0; i--) {
-	    	for(int j = 0; j < 3; j++) {
-	    		if(array[i][j] == 1)
-	    			return true;
-       		}
-       	}
-    }
-}
-*/
+
 
 void
 turn_off_button_lights(int floor)
@@ -176,22 +155,11 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
 		elev_set_stop_lamp(0);
 		open_close_door(array);
 
-		// Erase orders, turn off lights
         for(int i = 0; i < 4; i++) {
             for(int j = 0; j < 3; j++) {
                 array[i][j] = 0;
         	}
-        	if(i == 0) {
-        		elev_set_button_lamp(BUTTON_CALL_UP, i, 0);
-        	}
-        	else if(i == 3) {
-        		elev_set_button_lamp(BUTTON_CALL_DOWN, i, 0);
-        	}
-        	else {
-        		elev_set_button_lamp(BUTTON_CALL_UP, i, 0);
-        		elev_set_button_lamp(BUTTON_CALL_DOWN, i, 0);
-        	}
-        	elev_set_button_lamp(BUTTON_COMMAND, i, 0);
+        	turn_off_button_lights(i);
         }
 
 		//PRINT
@@ -221,18 +189,7 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
             for(int j = 0; j < 3; j++) {
                 array[i][j] = 0;
         	}
-
-        	if(i == 0) {
-        		elev_set_button_lamp(BUTTON_CALL_UP, i, 0);
-        	}
-        	else if(i == 3) {
-        		elev_set_button_lamp(BUTTON_CALL_DOWN, i, 0);
-        	}
-        	else {
-        		elev_set_button_lamp(BUTTON_CALL_UP, i, 0);
-        		elev_set_button_lamp(BUTTON_CALL_DOWN, i, 0);
-        	}
-        	elev_set_button_lamp(BUTTON_COMMAND, i, 0);
+        	turn_off_button_lights(i);
         }
 
         if(ord_floor == last_floor) {
