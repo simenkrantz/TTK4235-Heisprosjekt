@@ -110,60 +110,6 @@ int main()
 		    	current_state = IDLE;
 		    	break;
         }
-
-/**
-        while(!order_found) {
-            set_order_list_and_corresponding_lights(order_list);
-
-            if(elev_get_stop_signal()) {
-            	stop_state(order_list, order_floor, last_passed_floor, motor_direction);
-            	order_found = false;
-            	order_floor = -1;
-            }
-       		
-            for(int i = 0; i < 4; i++) {
-                for(int j = 0; j < 3; j++) {
-                    if(order_list[i][j] == 1){
-                        order_found = true;
-                        order_floor = i;
-                        break;
-                    }
-                }
-                if(order_found) {
-                    break;
-                }
-            }
-        }
-*/
-/**
-        while(order_floor != -1) {
-        	if(elev_get_stop_signal()) {
-        		stop_state(order_list, order_floor, last_passed_floor, motor_direction);
-        		order_found = false;
-        		order_floor = -1;
-        		break;
-        	}
-        	
-        	set_order_list_and_corresponding_lights(order_list);
-        	set_floor_indicator_lights();
-	        set_motor_direction(order_floor, last_passed_floor, motor_direction);
-	        
-	        current_floor = elev_get_floor_sensor_signal();
-	        if(current_floor != -1) {
-	            last_passed_floor = current_floor;	            
-	        }
-	        
-	        int index = get_matrix_index(motor_direction, order_list, last_passed_floor);
-
-	        if((order_list[last_passed_floor][index] == 1 || order_floor == last_passed_floor) 
-		       	&& elev_get_floor_sensor_signal() != -1) {
-
-	        	stop_handling_at_order_floor(motor_direction, order_list, index, last_passed_floor);
-        		order_floor = -1;
-        		order_found = false;
-			}
-	    }
-*/	    
     }
     return 0;
 }
