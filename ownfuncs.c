@@ -9,12 +9,12 @@
 static int delay_time = 3;
 
 void
-set_floor_lights(void)
+set_floor_indicator_lights(void)
 {
-        int current_floor = elev_get_floor_sensor_signal();
-        if (current_floor != -1){
-        	elev_set_floor_indicator(current_floor);
-        }
+    int current_floor = elev_get_floor_sensor_signal();
+    if (current_floor != -1){
+      	elev_set_floor_indicator(current_floor);
+    }
 }
 
 
@@ -29,7 +29,7 @@ open_close_door(int array[4][3])
 		if((current_time - start_time) == delay_time) {
 			break;
 		}
-		set_order_list_and_lights(array);
+		set_order_list_and_corresponding_lights(array);
 	}
 
 	elev_set_door_open_lamp(0);
@@ -79,7 +79,7 @@ get_matrix_index(int* motor_dir, int array[4][3], int last_floor)
 
 
 void
-set_order_list_and_lights(int array[4][3])
+set_order_list_and_corresponding_lights(int array[4][3])
 {
 	for(int i = 0; i < 4; i++) {
 		if(i == 0) {
@@ -119,6 +119,17 @@ set_order_list_and_lights(int array[4][3])
 	}
 }
 
+
+void
+stop_handling_at_order_floor(int* motor_dir, int array[4][3], int index, int last_floor)
+{
+    elev_set_motor_direction(DIRN_STOP);               
+    open_close_door(array);
+    for(int i = 0; i < 3; i++){
+       	array[last_floor][i] = 0;
+    }
+    turn_off_button_lights(last_floor);
+}
 
 
 void
@@ -162,14 +173,6 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
         	turn_off_button_lights(i);
         }
 
-		//PRINT
-        printf("\n STOP STATE\n");
-        for(int i = 0; i < 4; i++) {
-	        for(int j = 0; j < 3; j++) {
-	            printf("%d", array[i][j]);
-	        }
-	        printf("\n");
-        }
         emergency_stop = true;
 	}
 
@@ -183,8 +186,6 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
 		}
 
 		elev_set_stop_lamp(0);
-
-		// Erase orders, turn off lights
         for(int i = 0; i < 4; i++) {
             for(int j = 0; j < 3; j++) {
                 array[i][j] = 0;
@@ -202,15 +203,6 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
         		*motor_dir = -1;
         	}
         }
-
-        //PRINT
-        printf("\n STOP STATE\n");
-        for(int i = 0; i < 4; i++) {
-	        for(int j = 0; j < 3; j++) {
-	            printf("%d", array[i][j]);
-	        }
-	        printf("\n");
-	    }
 
         emergency_stop = true;
 	}

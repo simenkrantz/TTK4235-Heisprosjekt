@@ -3,9 +3,8 @@
 
 // Sets the floorlight for the last passed floor.
 
-// CHANGE NAME to set_floor_indicator_lights() ?
 void 
-set_floor_lights(void);
+set_floor_indicator_lights(void);
 
 /**
 
@@ -35,10 +34,8 @@ Sets the right element in the order array.
 Sets the corresponding button light high.
 @param array takes in array
 */
-
-// CHANGE NAME to and_corresponding_lights ?
 void
-set_order_list_and_lights(int array[4][3]);
+set_order_list_and_corresponding_lights(int array[4][3]);
 
 
 /**
@@ -58,12 +55,8 @@ void
 open_close_door(int array[4][3]);
 
 
-/**
-
-
-bool
-check_floors_for_further_orders(int floor, int* motor_dir, int array[4][3]);
-*/
+void
+stop_handling_at_order_floor(int* motor_dir, int array[4][3], int index, int last_floor);
 
 /**
 Turns off all lights in the given direction the elevator have.

@@ -12,30 +12,15 @@
 
 int main()
 {
-
-    // Initialize hardware
     if (!elev_init()) {
         printf("Unable to initialize elevator hardware!\n");
         return 1;
     }
 
-    /**
-    @var order_list: Elements in the array are set to 1 if the associated button is pressed
-	[ [UP from 1st, 	0		 , to 1st],
-	[  UP from 2nd, DOWN from 2nd, to 2nd],
-	[  UP from 3rd, DOWN from 3rd, to 3rd],
-	[  		0	  , DOWN from 4th, to 4th]]
-
-	@var motor_direction is last direction, is -1 if DIRN_DOWN, 1 if DIRN_UP
-    */
     int order_list[N_FLOORS][N_BUTTONS] = {{0},{0},{0}};
 
-
-	// Spec. 4.1 "Oppstart"
-
-    printf("Press STOP button to stop elevator and exit program.\n");
+    printf("Elevator program started up.\n");
     elev_set_motor_direction(DIRN_UP);
-    int *motor_direction = &(int){1};
 
     while (1) {
         if (elev_get_floor_sensor_signal() != -1) {
@@ -44,55 +29,36 @@ int main()
         }
     }
 
+    int *motor_direction = &(int){1};
     int last_passed_floor = elev_get_floor_sensor_signal();
     int order_floor = -1, current_floor = -1;
     bool order_found = false, emergency_variable = false;
 
 
-    // MAIN LOOP       Spec. 4.1 -- 4.7
-
 	while (1) {
-		set_floor_lights();
+		set_floor_indicator_lights();
         current_floor = elev_get_floor_sensor_signal();
         if(current_floor != -1) {
             last_passed_floor = current_floor;
         }
         
-
-        // STOP STATE          Spec. 4.6
-        	/**
-
-        	*/
         emergency_variable = stop_state(order_list, order_floor, last_passed_floor, motor_direction);
 
 
-        // IDLE STATE
-        	/**
-
-        	*/
         while(!order_found) {
-            // Check if buttons are pressed and sets lights
-            set_order_list_and_lights(order_list);
+            set_order_list_and_corresponding_lights(order_list);
 
             if(elev_get_stop_signal()) {
             	emergency_variable = stop_state(order_list, order_floor, last_passed_floor, motor_direction);
             	order_found = false;
             	order_floor = -1;
-
-        		printf("\n Stopp state IDLE %d\n", emergency_variable);
             }
        		
-
-
-
             for(int i = 0; i < 4; i++) {
                 for(int j = 0; j < 3; j++) {
                     if(order_list[i][j] == 1){
                         order_found = true;
                         order_floor = i;
-
-                        printf("Order floor is %d\n", order_floor);
-
                         break;
                     }
                 }
@@ -103,22 +69,16 @@ int main()
         }
 
 
-	   	// ORDER STATE
-	   		/**
-
-	   		*/
         while(order_floor != -1) {
-
         	if(elev_get_stop_signal()) {
         		emergency_variable = stop_state(order_list, order_floor, last_passed_floor, motor_direction);
         		order_found = false;
         		order_floor = -1;
-        		printf("\n Stopp state ORDER %d\n", emergency_variable);
         		break;
         	}
         	
-        	set_order_list_and_lights(order_list);
-        	set_floor_lights();
+        	set_order_list_and_corresponding_lights(order_list);
+        	set_floor_indicator_lights();
 	        set_motor_direction(order_floor, last_passed_floor, motor_direction);
 	        
 
@@ -129,31 +89,13 @@ int main()
 	        
 	        int index = get_matrix_index(motor_direction, order_list, last_passed_floor);
 
-
 	        if((order_list[last_passed_floor][index] == 1 || order_floor == last_passed_floor) 
-	        	&& elev_get_floor_sensor_signal() != -1) {
+		       	&& elev_get_floor_sensor_signal() != -1) {
 
-                elev_set_motor_direction(DIRN_STOP);               
-                open_close_door(order_list);
-                for(int i = 0; i < 3; i++){
-                	order_list[last_passed_floor][i] = 0;
-                }
-                turn_off_button_lights(last_passed_floor);
-                order_floor = -1;
-                order_found = false;
-
-                // PRINT
-                printf("Taken care of order \n");
-                for(int i = 0; i < 4; i++) {
-	                for(int j = 0; j < 3; j++) {
-	                   printf("%d", order_list[i][j]);
-	                }
-	                printf("\n");
-	            }
-	            printf("\n");
-            }
-
-
+	        	stop_handling_at_order_floor(motor_direction, order_list, index, last_passed_floor);
+        		order_floor = -1;
+        		order_found = false;
+			}
 
 /**
             // After emergency stop
