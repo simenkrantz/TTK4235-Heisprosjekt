@@ -1,6 +1,8 @@
 #include <time.h>
 #include <stdbool.h>
+#include <stdio.h>
 
+#include "elev.h"
 #include "run_state.h"
 #include "order.h"
 #include "emergency_stop.h"
