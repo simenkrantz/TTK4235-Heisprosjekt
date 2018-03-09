@@ -3,7 +3,7 @@
 
 #include "order.h"
 
-
+// Delay time in seconds
 static int delay_time = 3;
 
 void
@@ -26,7 +26,7 @@ open_close_door(int array[4][3])
 		if((current_time - start_time) == delay_time) {
 			break;
 		}
-		set_order_list_and_corresponding_lights(array);
+		set_order_matrix_and_corresponding_lights(array);
 	}
 
 	elev_set_door_open_lamp(0);

@@ -11,7 +11,6 @@ int main()
     }
 
     printf("Elevator program started up.\n");
-
     run_state_function();
 
     return 0;

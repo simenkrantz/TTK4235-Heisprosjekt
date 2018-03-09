@@ -35,7 +35,7 @@ get_matrix_index(int* motor_dir, int array[4][3], int last_floor)
 
 
 void
-set_order_list_and_corresponding_lights(int array[4][3])
+set_order_matrix_and_corresponding_lights(int array[4][3])
 {
 	for(int i = 0; i < 4; i++) {
 		if(i == 0) {
@@ -77,7 +77,7 @@ set_order_list_and_corresponding_lights(int array[4][3])
 
 
 void
-stop_handling_at_order_floor(int* motor_dir, int array[4][3], int index, int last_floor)
+stop_handling_at_order_floor(int* motor_dir, int array[4][3], int last_floor)
 {
     elev_set_motor_direction(DIRN_STOP);               
     open_close_door(array);

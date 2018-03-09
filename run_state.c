@@ -21,7 +21,8 @@ run_state_function(void)
 
     enum State {IDLE = 0, ORDER = 1, EMERGENCY_STOP = 2};
     enum State current_state = IDLE;
-    int order_list[N_FLOORS][N_BUTTONS] = {{0},{0},{0}};
+
+    int order_matrix[N_FLOORS][N_BUTTONS] = {{0},{0},{0}};
     int *motor_direction = &(int){1};
     int last_passed_floor = elev_get_floor_sensor_signal();
     int order_floor = -1, current_floor = -1;
@@ -38,7 +39,7 @@ run_state_function(void)
         	case IDLE:
         		printf("IDLE is 0: %d\n", current_state);
         		while(!order_found) {
-            		set_order_list_and_corresponding_lights(order_list);
+            		set_order_matrix_and_corresponding_lights(order_matrix);
 
 	            	if(elev_get_stop_signal()) {
 	            		current_state = EMERGENCY_STOP;
@@ -49,7 +50,7 @@ run_state_function(void)
 	       		
 	            	for(int i = 0; i < 4; i++) {
 	                	for(int j = 0; j < 3; j++) {
-	                    	if(order_list[i][j] == 1){
+	                    	if(order_matrix[i][j] == 1){
 	                        	order_found = true;
 	                        	order_floor = i;
 	                        	current_state = ORDER;
@@ -70,7 +71,7 @@ run_state_function(void)
 		        		break;
 		        	}
         	
-        			set_order_list_and_corresponding_lights(order_list);
+        			set_order_matrix_and_corresponding_lights(order_matrix);
 		        	set_floor_indicator_lights();
 			        set_motor_direction(order_floor, last_passed_floor, motor_direction);
 			        
@@ -79,12 +80,12 @@ run_state_function(void)
 			            last_passed_floor = current_floor;	            
 			        }
 	        
-			        int index = get_matrix_index(motor_direction, order_list, last_passed_floor);
+			        int index = get_matrix_index(motor_direction, order_matrix, last_passed_floor);
 
-			        if((order_list[last_passed_floor][index] == 1 || order_floor == last_passed_floor) 
+			        if((order_matrix[last_passed_floor][index] == 1 || order_floor == last_passed_floor) 
 				       	&& elev_get_floor_sensor_signal() != -1) {
 
-			        	stop_handling_at_order_floor(motor_direction, order_list, index, last_passed_floor);
+			        	stop_handling_at_order_floor(motor_direction, order_matrix, last_passed_floor);
 		        		order_floor = -1;
 		        		order_found = false;
 		        		current_state = IDLE;
@@ -93,7 +94,7 @@ run_state_function(void)
 			    }
 		    case EMERGENCY_STOP:
 		    	printf("STOP is 2: %d\n", current_state);
-		    	stop_state(order_list, order_floor, last_passed_floor, motor_direction);
+		    	stop_state(order_matrix, order_floor, last_passed_floor, motor_direction);
 		    	current_state = IDLE;
 		    	break;
         }
