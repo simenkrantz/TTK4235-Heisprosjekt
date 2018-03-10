@@ -1,9 +1,6 @@
 #include <stdio.h>
 
-#include "elev.h"
-
-#include "run_state.h"
-#include "controller.h"
+#include "FSM.h"
 
 int
 main()
