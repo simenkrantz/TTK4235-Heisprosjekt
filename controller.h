@@ -2,7 +2,7 @@
 #define __INCLUDE_CONTROLLER_H__
 
 /**
-Turns on the light to the last passed floor, on the floor panel.
+Manages floor indicator lights according to last passed floor.
 */
 void 
 set_floor_indicator_lights(void);
@@ -10,6 +10,7 @@ set_floor_indicator_lights(void);
 
 /**
 Turns on door lamp for 3 seconds, then turns it off again.
+Enables taking orders while door is open.
 @param array is the 4 x 3 array containing the orders.
 */
 void
@@ -17,13 +18,10 @@ open_close_door(int array[4][3]);
 
 
 /**
-If the ordered floor is higher than the last passed floor, 
-set motor direction up.
-If the ordered floor is lower than the last passed floor,
-set motor direction down.
-@param order_floor is the floor where it is an order.
+Sets motor direction up or down, based on the elevators last passed floor and the target floor.
+@param order_floor is the target floor of the elevator.
 @param last_floor is the last floor the elevator passed.
-@param motor_dir is a pointer to the last motor direction.
+@param motor_dir is a pointer to the last motor direction. 1 is UP, -1 is DOWN.
 */
 void
 set_motor_direction(int order_floor, int last_floor, int* motor_dir);

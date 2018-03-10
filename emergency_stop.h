@@ -3,7 +3,7 @@
 
 /**
 Handles spec. 4.6, when the stop button is pressed.
-Erases orders, turns off all lights.
+Erases orders, turns off all lights. If elevator stops at a floor, open door for 3 seconds.
 @param array is the 4 x 3 array containing the orders.
 @param motor_dir is a pointer to the last motor direction.
 */

@@ -2,9 +2,19 @@
 #define __RUN_STATE_H__
 
 /**
-Main program, handles states with a switch.
+Initializes the hardware.
+Drives up as long as the elevator hasn't reached a defined state.
+@return 0 if hardware not initialized. 1 if initializing succeeded and
+elevator is in a defined state.
+*/
+int
+initialize_state_machine(void);
+
+
+/**
+Main program, handles state machine with a switch.
 */
 void
-run_state_function(void);
+state_machine(void);
 
 #endif

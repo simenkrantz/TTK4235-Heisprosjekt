@@ -1,11 +1,12 @@
 #include <time.h>
 #include <stdio.h>
+
 #include "elev.h"
 #include "io.h"
 
 #include "order.h"
 
-// Delay time in seconds
+// Delay time in seconds. Determines for how long the door is open.
 static int delay_time = 3;
 
 void
@@ -28,6 +29,7 @@ open_close_door(int array[4][3])
 		if((current_time - start_time) == delay_time) {
 			break;
 		}
+		
 		set_order_matrix_and_corresponding_lights(array);
 	}
 
@@ -54,13 +56,13 @@ turn_off_button_lights(int floor)
 	    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
 	    elev_set_button_lamp(BUTTON_CALL_UP, floor, 0);
     }
-    else if(floor == 3) {
-       	elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
-       	elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
-    }
-    else if(floor == 1 || floor == 2){
+    else if(floor == 1 || floor == 2) {
     	elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
     	elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
     	elev_set_button_lamp(BUTTON_CALL_UP, floor, 0);
+    }
+    else {
+    	elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
+       	elev_set_button_lamp(BUTTON_CALL_DOWN, floor, 0);
     }
 }
