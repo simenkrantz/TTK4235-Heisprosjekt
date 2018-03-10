@@ -45,24 +45,7 @@ set_motor_direction(int order_floor, int last_floor, int* motor_dir)
 	   	elev_set_motor_direction(DIRN_DOWN);
 	   	*motor_dir = -1;
 	}
-	
-
-	//trenger logikk her som gjør at motorretningen ikke switcher hele tiden pga while-løkken i case ORDER i run_state.c
-	//begge gir treg piping med retning nedover
-	//mulig å late som at last_passed_floor er -/+, for å illudere en quick fix
-/**	else if(order_floor == last_floor && elev_get_floor_sensor_signal() == -1){
-		if(*motor_dir == -1){
-			elev_set_motor_direction(DIRN_UP);
-			*motor_dir = 1;
-			printf("test1\n");
-		}
-		else if(*motor_dir == 1){
-			elev_set_motor_direction(DIRN_DOWN);
-			*motor_dir = -1;
-			printf("test2\n");
-		}
-	}
-*/}
+}
 
 void
 turn_off_button_lights(int floor)

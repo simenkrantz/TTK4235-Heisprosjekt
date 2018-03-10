@@ -9,11 +9,8 @@ int
 get_matrix_index(int* motor_dir, int array[4][3], int last_floor)
 {
 	int value = -1;
-	if(last_floor == 0)
-		value = 0;
-	else if(last_floor == 3)
-		value = 1;
-	else if(*motor_dir == 1){
+
+	if(*motor_dir == 1){
 	    for(int i = last_floor + 1; i < 4; i++) {
 	    	for(int j = 0; j < 3; j++) {
 	    		if(array[i][j] == 1)
@@ -21,6 +18,7 @@ get_matrix_index(int* motor_dir, int array[4][3], int last_floor)
 	   		}
 	   	}
 	}
+	
 	else if(*motor_dir == -1){
 		for(int i = last_floor - 1; i >= 0; i--) {
 	    	for(int j = 0; j < 3; j++) {
@@ -86,8 +84,10 @@ stop_handling_at_order_floor(int* motor_dir, int array[4][3], int last_floor)
     turn_off_button_lights(last_floor);
 }
 
+
 int
-order_handling_after_emergency_stop(int* motor_dir, int array[4][3], int last_floor) {
+search_after_order_in_matrix(int array[4][3]) 
+{
 	int return_value = -1;
 	set_order_matrix_and_corresponding_lights(array);
 	for(int i = 0; i < 4; i++) {
@@ -97,18 +97,6 @@ order_handling_after_emergency_stop(int* motor_dir, int array[4][3], int last_fl
 	        }
 	    }
 	}
-
-	if(return_value == last_floor) {
-	    if(*motor_dir == -1) {
-	   		elev_set_motor_direction(DIRN_UP);
-	   		*motor_dir = 1;                
-	        printf("Ord=last ned\n");
-	    }
-	   	else if(*motor_dir == 1) {
-	   		elev_set_motor_direction(DIRN_DOWN);
-	        *motor_dir = -1;
-	        printf("Ord=last opp\n");
-	    }
-	}
 	return return_value;
 }
+

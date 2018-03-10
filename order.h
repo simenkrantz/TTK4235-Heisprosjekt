@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 /**
+Search for orders, based on the elevators direction and current position.
 @return the matrix row to check next.
 @param motor_dir is a pointer to the last motor direction.
 @param array is the 4 x 3 array containing the orders.
@@ -33,8 +34,14 @@ void
 stop_handling_at_order_floor(int* motor_dir, int array[4][3], int last_floor);
 
 
+/**
+Searches through the order matrix for an order.
+@return Default -1. If order found, returns the found floor.
+@param array is the 4 x 3 array containing the order. 
+*/
 int
-order_handling_after_emergency_stop(int* motor_dir, int array[4][3], int last_floor);
+search_after_order_in_matrix(int array[4][3]);
+
 
 
 #endif

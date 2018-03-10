@@ -45,3 +45,24 @@ stop_state(int array[4][3], int* motor_dir)
         }
     }
 }
+
+
+
+int
+order_handling_after_emergency_stop(int* motor_dir, int array[4][3], int last_floor) {    
+    int return_value = search_after_order_in_matrix(array);
+
+    if(return_value == last_floor) {
+        if(*motor_dir == -1) {
+            elev_set_motor_direction(DIRN_UP);
+            *motor_dir = 1;                
+            printf("Ord=last ned\n");
+        }
+        else if(*motor_dir == 1) {
+            elev_set_motor_direction(DIRN_DOWN);
+            *motor_dir = -1;
+            printf("Ord=last opp\n");
+        }
+    }
+    return return_value;
+}
