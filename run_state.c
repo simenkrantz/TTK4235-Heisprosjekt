@@ -28,7 +28,6 @@ run_state_function(void)
     int *motor_direction = &(int){1};
     int last_passed_floor = elev_get_floor_sensor_signal();
     int order_floor = -1, current_floor = -1;
-    bool order_found = false;
 
 	while (1) {
 		set_floor_indicator_lights();
@@ -39,40 +38,41 @@ run_state_function(void)
         
         switch(current_state) {
         	case IDLE:
+        		printf("\033[F");
+        		printf("\033[K");
         		printf("IDLE is 0: %d\n", current_state);
-        		while(!order_found) {
-            		set_order_matrix_and_corresponding_lights(order_matrix);
+            	set_order_matrix_and_corresponding_lights(order_matrix);
 
-	            	if(elev_get_stop_signal()) {
-	            		current_state = EMERGENCY_STOP;
-	            		order_found = false;
-	            		order_floor = -1;
-	            		break;
-	            	}
+	            if(elev_get_stop_signal()) {
+	            	current_state = EMERGENCY_STOP;
+	            	order_floor = -1;
+	            	break;
+	            }
 	       		
-	            	for(int i = 0; i < 4; i++) {
-	                	for(int j = 0; j < 3; j++) {
-	                    	if(order_matrix[i][j] == 1){
-	                        	order_found = true;
-	                        	order_floor = i;
-	                        	current_state = ORDER;
-	                        	break;
-	                    	}
-	                	}
-	                	if(order_found)
-	                    	break;
-	            	}
-	        	}
+	            for(int i = 0; i < 4; i++) {
+	               	for(int j = 0; j < 3; j++) {
+	                   	if(order_matrix[i][j] == 1){
+	            	       	order_floor = i;
+	                      	current_state = ORDER;
+	                      	break;
+	                   	}
+	               	}
+	               	if(current_state == ORDER)
+	                   	break;
+	            }
+	        	break;
         	case ORDER:
+        		printf("\033[F");
+        		printf("\033[K");
         		printf("ORDER is 1: %d\n", current_state);
-        		while(order_floor != -1) {
+        		if(order_floor != -1) {
         			if(elev_get_stop_signal()) {
         				current_state = EMERGENCY_STOP;
-		        		order_found = false;
 		        		order_floor = -1;
 		        		break;
 		        	}
-        	
+
+
         			set_order_matrix_and_corresponding_lights(order_matrix);
 		        	set_floor_indicator_lights();
 			        set_motor_direction(order_floor, last_passed_floor, motor_direction);
@@ -89,15 +89,23 @@ run_state_function(void)
 
 			        	stop_handling_at_order_floor(motor_direction, order_matrix, last_passed_floor);
 		        		order_floor = -1;
-		        		order_found = false;
 		        		current_state = IDLE;
 		        		break;
 					}
 			    }
+			    break;
 		    case EMERGENCY_STOP:
+        		printf("\033[F");
+        		printf("\033[K");
 		    	printf("STOP is 2: %d\n", current_state);
-		    	stop_state(order_matrix, order_floor, last_passed_floor, motor_direction);
-		    	current_state = IDLE;
+		    	stop_state(order_matrix, motor_direction);
+		    	
+		    	order_floor = order_handling_after_emergency_stop(motor_direction, order_matrix, last_passed_floor);
+		    	
+		    	if(order_floor != -1) {
+		    		current_state = ORDER;
+		    		break;
+		    	}
 		    	break;
         }
     }

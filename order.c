@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include "elev.h"
 
 #include "order.h"
@@ -85,4 +84,31 @@ stop_handling_at_order_floor(int* motor_dir, int array[4][3], int last_floor)
        	array[last_floor][i] = 0;
     }
     turn_off_button_lights(last_floor);
+}
+
+int
+order_handling_after_emergency_stop(int* motor_dir, int array[4][3], int last_floor) {
+	int return_value = -1;
+	set_order_matrix_and_corresponding_lights(array);
+	for(int i = 0; i < 4; i++) {
+	   	for(int j = 0; j < 3; j++) {
+	       	if(array[i][j] == 1){
+	          	return_value = i;
+	        }
+	    }
+	}
+
+	if(return_value == last_floor) {
+	    if(*motor_dir == -1) {
+	   		elev_set_motor_direction(DIRN_UP);
+	   		*motor_dir = 1;                
+	        printf("Ord=last ned\n");
+	    }
+	   	else if(*motor_dir == 1) {
+	   		elev_set_motor_direction(DIRN_DOWN);
+	        *motor_dir = -1;
+	        printf("Ord=last opp\n");
+	    }
+	}
+	return return_value;
 }

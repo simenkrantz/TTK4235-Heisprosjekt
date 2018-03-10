@@ -7,7 +7,7 @@
 #include "order.h"
 
 void
-stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
+stop_state(int array[4][3], int* motor_dir)
 {
 	if(elev_get_floor_sensor_signal() != -1 && elev_get_stop_signal()) {
 
@@ -43,16 +43,5 @@ stop_state(int array[4][3], int ord_floor, int last_floor, int* motor_dir)
         	}
         	turn_off_button_lights(i);
         }
-
-        if(ord_floor == last_floor) {
-        	if(*motor_dir == -1) {
-        		elev_set_motor_direction(DIRN_UP);
-        		*motor_dir = 1;
-        	}
-        	else if(*motor_dir == 1) {
-        		elev_set_motor_direction(DIRN_DOWN);
-        		*motor_dir = -1;
-        	}
-        }
-	}
+    }
 }

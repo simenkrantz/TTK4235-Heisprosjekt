@@ -1,6 +1,9 @@
 #ifndef __INCLUDE_ORDER_H__
 #define __INCLUDE_ORDER_H__
 
+
+#include <stdbool.h>
+
 /**
 @return the matrix row to check next.
 @param motor_dir is a pointer to the last motor direction.
@@ -28,6 +31,10 @@ Erase the order for the given floor and turn off the lights.
 */
 void
 stop_handling_at_order_floor(int* motor_dir, int array[4][3], int last_floor);
+
+
+int
+order_handling_after_emergency_stop(int* motor_dir, int array[4][3], int last_floor);
 
 
 #endif
